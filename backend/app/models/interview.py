@@ -1,7 +1,8 @@
 from datetime import datetime
 from uuid import uuid4
 
-from sqlalchemy import UUID, Column, DateTime, Float, ForeignKey, String, Text
+from sqlalchemy import Column, DateTime, Float, ForeignKey, String, Text
+from sqlalchemy.dialects.sqlite import BLOB as UUID
 
 from app.db.base import Base
 

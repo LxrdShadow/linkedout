@@ -1,6 +1,7 @@
 from uuid import uuid4
 
-from sqlalchemy import UUID, Column, ForeignKey, Text
+from sqlalchemy import Column, ForeignKey, Text
+from sqlalchemy.dialects.sqlite import BLOB as UUID
 
 from app.db.base import Base
 
