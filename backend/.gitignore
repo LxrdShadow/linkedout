@@ -1,0 +1,33 @@
+# .gitignore
+
+# Python
+__pycache__/
+*.py[cod]
+*.sqlite3
+*.pyc
+*.pyo
+*.pyd
+.Python
+
+# Virtual env
+env/
+venv/
+.venv/
+ENV/
+*.env
+
+# Django
+*.log
+staticfiles/
+media/
+db.sqlite3
+
+# VSCode
+.vscode/
+
+# Migrations
+**/migrations/*.py
+**/migrations/__pycache__/
+
+# Environment
+.env
