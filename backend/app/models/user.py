@@ -2,6 +2,7 @@ from datetime import datetime
 from uuid import uuid4
 
 from sqlalchemy import Column, DateTime, String
+from sqlalchemy.orm import relationship
 
 from app.db.base import Base
 
@@ -14,3 +15,5 @@ class User(Base):
     email = Column(String, unique=True, index=True)
     hashed_password = Column(String, nullable=False)
     created_at = Column(DateTime, default=datetime.now)
+
+    interviews = relationship("Interview", back_populates="owner")

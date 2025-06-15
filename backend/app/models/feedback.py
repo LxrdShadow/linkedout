@@ -2,6 +2,7 @@ from datetime import datetime
 from uuid import uuid4
 
 from sqlalchemy import Column, DateTime, Float, ForeignKey, String, Text
+from sqlalchemy.orm import relationship
 
 from app.db.base import Base
 
@@ -16,3 +17,5 @@ class Feedback(Base):
     comment = Column(Text)
     source = Column(String, default="AI")
     created_at = Column(DateTime, default=datetime.utcnow)
+
+    answer = relationship("Answer", back_populates="feedbacks")
