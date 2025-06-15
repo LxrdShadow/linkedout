@@ -1,0 +1,9 @@
+fastapi[standard]
+passlib
+pydantic
+PyJWT
+python-dotenv
+python-multipart
+sqlalchemy
+uvicorn
+
