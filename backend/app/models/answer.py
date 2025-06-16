@@ -1,7 +1,6 @@
 from uuid import uuid4
 
-from sqlalchemy import Column, ForeignKey, Text
-from sqlalchemy.dialects.sqlite import BLOB as UUID
+from sqlalchemy import Column, ForeignKey, String, Text
 
 from app.db.base import Base
 
@@ -9,7 +8,7 @@ from app.db.base import Base
 class Answer(Base):
     __tablename__ = "answers"
 
-    id = Column(UUID, primary_key=True, default=uuid4)
-    question_id = Column(UUID, ForeignKey("questions.id"))
+    id = Column(String, primary_key=True, default=uuid4)
+    question_id = Column(String, ForeignKey("questions.id", ondelete="CASCADE"))
     text_response = Column(Text)
     # audio_path = Column(String)
