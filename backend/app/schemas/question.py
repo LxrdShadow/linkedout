@@ -4,8 +4,8 @@ from pydantic import BaseModel
 
 
 class QuestionBase(BaseModel):
-    question_text: str
-    question_index: int
+    text: str
+    index: int
 
 
 class QuestionCreate(QuestionBase):

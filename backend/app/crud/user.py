@@ -14,16 +14,16 @@ def _hash_password(password: str) -> str:
 
 
 def create_user(db: Session, user_in: UserCreate):
-    db_user = User(
+    user = User(
         id=str(uuid4()),
         username=user_in.username,
         email=user_in.email,
         hashed_password=_hash_password(user_in.password),
     )
-    db.add(db_user)
+    db.add(user)
     db.commit()
-    db.refresh(db_user)
-    return db_user
+    db.refresh(user)
+    return user
 
 
 def get_user_by_email(db: Session, email: str):
