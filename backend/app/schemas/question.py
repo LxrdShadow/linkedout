@@ -5,7 +5,6 @@ from pydantic import BaseModel
 
 class QuestionBase(BaseModel):
     text: str
-    index: int
 
 
 class QuestionCreate(QuestionBase):
@@ -17,4 +16,4 @@ class QuestionOut(QuestionBase):
     interview_id: UUID
 
     class Config:
-        orm_mode = True
+        from_attributes = True

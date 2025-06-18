@@ -1,11 +1,14 @@
-from fastapi import APIRouter, Depends, status
+from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 
-import app.crud.interview as crud
+import app.crud.interview as interview_crud
+import app.crud.question as question_crud
 from app.api.deps import get_db
 from app.auth.auth import get_current_user
 from app.models.user import User
-from app.schemas.interview import InterviewCreate, InterviewOut
+from app.schemas.interview import Difficulty, InterviewCreate, InterviewOut
+from app.schemas.question import QuestionCreate, QuestionOut
+from app.services.question import get_questions_from_json
 
 router = APIRouter(prefix="/interviews", tags=["interviews"])
 
@@ -17,14 +20,28 @@ async def read_interviews(
     auth_user: User = Depends(get_current_user),
     db: Session = Depends(get_db),
 ):
-    return crud.get_user_interviews(db, auth_user.id, skip=skip, limit=limit)
+    return interview_crud.get_user_interviews(db, auth_user.id, skip=skip, limit=limit)
 
 
-@router.post("/", response_model=InterviewOut, status_code=status.HTTP_201_CREATED)
+@router.post("/", response_model=list[QuestionOut], status_code=status.HTTP_201_CREATED)
 async def create_interview(
     interview: InterviewCreate,
     auth_user: User = Depends(get_current_user),
     db: Session = Depends(get_db),
 ):
+    if interview.difficulty not in Difficulty:
+        raise HTTPException(400, "Niveau de difficulté invalide.")
 
-    return crud.create_interview(db, auth_user, interview)
+    interview = interview_crud.create_interview(db, interview, auth_user.id)
+    questions: list[QuestionOut] = []
+
+    # TODO: Get the questions from AI based on the interview role and the difficulty
+    question_list = get_questions_from_json()
+
+    for question in question_list:
+        question_out = question_crud.create_question(
+            db, QuestionCreate(text=question["text"]), interview
+        )
+        questions.append(question_out)
+
+    return questions

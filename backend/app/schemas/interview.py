@@ -1,12 +1,20 @@
 from datetime import datetime
+from enum import Enum
 from typing import Optional
 from uuid import UUID
 
 from pydantic import BaseModel
 
 
+class Difficulty(str, Enum):
+    EASY = "facile"
+    MEDIUM = "intermediaire"
+    HARD = "difficile"
+
+
 class InterviewBase(BaseModel):
     role: str
+    difficulty: Difficulty = Difficulty.EASY
 
 
 class InterviewCreate(InterviewBase):
@@ -22,4 +30,4 @@ class InterviewOut(InterviewBase):
     feedback_summary: Optional[str]
 
     class Config:
-        orm_mode = True
+        from_attribute = True
