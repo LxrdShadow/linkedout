@@ -5,7 +5,6 @@ from pydantic import BaseModel, EmailStr
 
 
 class UserBase(BaseModel):
-    username: str
     email: EmailStr
 
 
@@ -15,6 +14,7 @@ class UserCreate(UserBase):
 
 class UserOut(UserBase):
     id: UUID
+    username: str = None
     created_at: datetime
 
     class Config:

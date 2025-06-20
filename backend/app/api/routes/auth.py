@@ -26,7 +26,22 @@ async def register(user: UserCreate, db: Session = Depends(get_db)):
     if existing:
         raise HTTPException(400, "Nom d'utilisateur déjà utilisé")
 
+    # TODO: Send OTP to confirm the email
     return crud_user.create_user(db, user)
+
+
+@router.post("/verify-otp", status_code=status.HTTP_200_OK)
+async def verify_OTP(otp: str, db: Session = Depends(get_db)):
+    # TODO: Verify the OTP sent to the user by email
+    ...
+
+
+@router.post("/set-username/{user_id}", status_code=status.HTTP_200_OK)
+async def set_username(user_id: str, username: str, db: Session = Depends(get_db)):
+    user = crud_user.set_username(db, user_id, username)
+    access_token = create_access_token(data={"sub": user.id})
+
+    return Token(access_token=access_token, token_type="bearer")
 
 
 @router.post("/login", response_model=Token)

@@ -5,6 +5,8 @@ from uuid import UUID
 
 from pydantic import BaseModel
 
+from app.schemas.question import QuestionOut
+
 
 class Difficulty(str, Enum):
     EASY = "facile"
@@ -28,6 +30,7 @@ class InterviewOut(InterviewBase):
     completed_at: Optional[datetime]
     total_score: Optional[float]
     feedback_summary: Optional[str]
+    questions: list[QuestionOut]
 
     class Config:
         from_attribute = True

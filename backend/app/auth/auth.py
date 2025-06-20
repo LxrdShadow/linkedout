@@ -27,7 +27,6 @@ def get_current_user(
     except PyJWTError:
         raise credentials_exception
 
-    print("getting the user")
     user = get_user(db, user_id)
     if user is None:
         raise credentials_exception
