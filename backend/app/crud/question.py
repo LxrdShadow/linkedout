@@ -15,3 +15,11 @@ def create_question(db: Session, question_in: QuestionCreate, interview: Intervi
     db.commit()
     db.refresh(question)
     return question
+
+
+def get_question(db: Session, question_id: str):
+    return db.query(Question).where(Question.id == question_id).first()
+
+
+def get_interview_quesitons(db: Session, interview: Interview):
+    return db.query(Question).where(Question.interview_id == interview.id).all()

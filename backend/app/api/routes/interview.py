@@ -20,7 +20,7 @@ async def read_interviews(
     auth_user: User = Depends(get_current_user),
     db: Session = Depends(get_db),
 ):
-    return interview_crud.get_user_interviews(db, auth_user.id, skip=skip, limit=limit)
+    return interview_crud.get_user_interviews(db, auth_user, skip=skip, limit=limit)
 
 
 @router.post("/", response_model=list[QuestionOut], status_code=status.HTTP_201_CREATED)
@@ -32,7 +32,7 @@ async def create_interview(
     if interview.difficulty not in Difficulty:
         raise HTTPException(400, "Niveau de difficulté invalide.")
 
-    interview = interview_crud.create_interview(db, interview, auth_user.id)
+    interview = interview_crud.create_interview(db, interview, auth_user)
     questions: list[QuestionOut] = []
 
     # TODO: Get the questions from AI based on the interview role and the difficulty
@@ -45,3 +45,16 @@ async def create_interview(
         questions.append(question_out)
 
     return questions
+
+
+@router.get(
+    "/{interview_id}/questions",
+    response_model=list[QuestionOut],
+    status_code=status.HTTP_200_OK,
+)
+async def read_interview_questions(interview_id: str, db: Session = Depends(get_db)):
+    interview = interview_crud.get_interview(db, interview_id)
+    if not interview:
+        raise HTTPException(404, "L'interview n'a pas été trouvé.")
+
+    return question_crud.get_interview_questions(db, interview)
