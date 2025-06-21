@@ -7,6 +7,10 @@ from app.models.user import User
 from app.schemas.interview import InterviewCreate
 
 
+def get_interview(db: Session, interview_id: str):
+    return db.query(Interview).where(Interview.id == interview_id).first()
+
+
 def get_user_interviews(db: Session, user: User, skip: int = 0, limit: int = 10):
     return (
         db.query(Interview)

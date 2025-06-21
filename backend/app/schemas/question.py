@@ -5,6 +5,7 @@ from pydantic import BaseModel
 
 class QuestionBase(BaseModel):
     text: str
+    index: int
 
 
 class QuestionCreate(QuestionBase):

@@ -1,6 +1,6 @@
 from uuid import uuid4
 
-from sqlalchemy import Column, ForeignKey, String, Text
+from sqlalchemy import Column, ForeignKey, Integer, String, Text
 from sqlalchemy.orm import relationship
 
 from app.db.base import Base
@@ -11,6 +11,7 @@ class Question(Base):
 
     id = Column(String, primary_key=True, default=uuid4)
     interview_id = Column(String, ForeignKey("interviews.id", ondelete="CASCADE"))
+    index = Column(Integer)
     text = Column(Text)
 
     interview = relationship("Interview", back_populates="questions")

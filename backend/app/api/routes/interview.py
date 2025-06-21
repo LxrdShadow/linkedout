@@ -38,9 +38,9 @@ async def create_interview(
     # TODO: Get the questions from AI based on the interview role and the difficulty
     question_list = get_questions_from_json()
 
-    for question in question_list:
+    for i, question in enumerate(question_list):
         question_out = question_crud.create_question(
-            db, QuestionCreate(text=question["text"]), interview
+            db, QuestionCreate(text=question["text"], index=i), interview
         )
         questions.append(question_out)
 
