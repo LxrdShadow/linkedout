@@ -1,12 +1,18 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordRequestForm
+from jwt import PyJWTError
 from passlib.context import CryptContext
 from sqlalchemy.orm import Session
 
 import app.crud.user as crud_user
 from app.api.deps import get_db
 from app.auth.auth import create_otp, verify_otp
-from app.auth.jwt import create_access_token
+from app.auth.jwt import (
+    create_access_token,
+    create_refresh_token,
+    create_tokens,
+    decode_token,
+)
 from app.schemas.otp import OTPVerify
 from app.schemas.token import Token
 from app.schemas.user import UserCreate, UserOut
@@ -78,9 +84,9 @@ async def resend_OTP(email: str, db: Session = Depends(get_db)):
 @router.post("/set-username/{user_id}", status_code=status.HTTP_200_OK)
 async def set_username(user_id: str, username: str, db: Session = Depends(get_db)):
     user = crud_user.set_username(db, user_id, username)
-    access_token = create_access_token(data={"sub": user.id})
+    tokens = create_tokens(data={"sub": user.id})
 
-    return Token(access_token=access_token, token_type="bearer")
+    return Token(**tokens)
 
 
 @router.post("/login", response_model=Token)
@@ -91,10 +97,25 @@ async def login(
     if not user or not pwd_context.verify(form_data.password, user.hashed_password):
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Identifiant ou mot de passe incorrect",
+            detail="Identifiant ou mot de passe incorrect.",
             headers={"WWW-Authenticate": "Bearer"},
         )
+    tokens = create_tokens(data={"sub": user.id})
 
-    access_token = create_access_token(data={"sub": user.id})
+    return Token(**tokens)
 
-    return Token(access_token=access_token, token_type="bearer")
+
+@router.post("/refresh", response_model=Token)
+def refresh_token(token: str):
+    if not token:
+        raise HTTPException(400, "Refresh token manquant.")
+
+    try:
+        payload = decode_token(token)
+        user_id = payload.get("sub")
+    except PyJWTError:
+        raise HTTPException(401, "Refresh token invalide")
+
+    tokens = create_tokens(data={"sub": user_id})
+
+    return Token(**tokens)

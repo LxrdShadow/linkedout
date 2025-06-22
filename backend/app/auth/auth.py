@@ -7,7 +7,7 @@ from jwt import PyJWTError
 from sqlalchemy.orm import Session
 
 from app.api.deps import get_db
-from app.auth.jwt import decode_access_token
+from app.auth.jwt import decode_token
 from app.crud.user import get_user, get_user_by_email
 from app.models.otp import OTP
 from app.schemas.otp import OTPVerify
@@ -25,7 +25,7 @@ def get_current_user(
     )
 
     try:
-        payload = decode_access_token(token)
+        payload = decode_token(token)
         user_id: str = payload.get("sub")
         if user_id is None:
             raise credentials_exception
