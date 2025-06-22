@@ -29,7 +29,7 @@ async def register(user: UserCreate, db: Session = Depends(get_db)):
     return crud_user.create_user(db, user)
 
 
-@router.post("/verify-otp", status_code=status.HTTP_200_OK)
+@router.post("/verify", status_code=status.HTTP_200_OK)
 async def verify_OTP(otp: str, db: Session = Depends(get_db)):
     # TODO: Verify the OTP sent to the user by email
     ...
