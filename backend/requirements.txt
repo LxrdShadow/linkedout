@@ -1,7 +1,8 @@
 fastapi[standard]
 passlib
+bcrypt
 pydantic
-PyJWT
+pyjwt
 python-dotenv
 python-multipart
 sqlalchemy

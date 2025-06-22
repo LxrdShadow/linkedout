@@ -1,13 +1,35 @@
-from sqlalchemy.orm import Session
+from uuid import uuid4
+
+from sqlalchemy.orm import Session, joinedload
 
 from app.models.interview import Interview
+from app.models.user import User
+from app.schemas.interview import InterviewCreate
 
 
-def get_user_interviews(db: Session, user_id: str, skip: int = 0, limit: int = 10):
+def get_interview(db: Session, interview_id: str):
+    return db.query(Interview).where(Interview.id == interview_id).first()
+
+
+def get_user_interviews(db: Session, user: User, skip: int = 0, limit: int = 10):
     return (
         db.query(Interview)
-        .where(Interview.user_id == user_id)
+        .where(Interview.user_id == user.id)
+        .options(joinedload(Interview.questions))
         .offset(skip)
         .limit(limit)
         .all()
     )
+
+
+def create_interview(db: Session, interview_in: InterviewCreate, user: User):
+    interview = Interview(
+        id=str(uuid4()),
+        role=interview_in.role,
+        difficulty=interview_in.difficulty,
+        user_id=user.id,
+    )
+    db.add(interview)
+    db.commit()
+    db.refresh(interview)
+    return interview
