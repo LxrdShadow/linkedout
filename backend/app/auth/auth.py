@@ -1,7 +1,7 @@
 from datetime import datetime, timedelta
 from uuid import uuid4
 
-from fastapi import Depends, HTTPException, status
+from fastapi import Depends, HTTPException, Request, status
 from fastapi.security import OAuth2PasswordBearer
 from jwt import PyJWTError
 from sqlalchemy.orm import Session
@@ -16,8 +16,12 @@ oauth2_schema = OAuth2PasswordBearer(tokenUrl="auth/login")
 
 
 def get_current_user(
-    token: str = Depends(oauth2_schema), db: Session = Depends(get_db)
+    request: Request, token: str = Depends(oauth2_schema), db: Session = Depends(get_db)
 ):
+    # Check if user is already cached on the request.state
+    if hasattr(request.state, "user"):
+        return request.state.user
+
     credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
         detail="Erreur lors de la validation des informations",
@@ -36,6 +40,7 @@ def get_current_user(
     if user is None:
         raise credentials_exception
 
+    request.state.user = user
     return user
 
 

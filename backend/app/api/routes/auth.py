@@ -6,13 +6,9 @@ from sqlalchemy.orm import Session
 
 import app.crud.user as crud_user
 from app.api.deps import get_db
-from app.auth.auth import create_otp, verify_otp
-from app.auth.jwt import (
-    create_access_token,
-    create_refresh_token,
-    create_tokens,
-    decode_token,
-)
+from app.auth.auth import create_otp, get_current_user, verify_otp
+from app.auth.jwt import create_tokens, decode_token
+from app.models.user import User
 from app.schemas.otp import OTPVerify
 from app.schemas.token import Token
 from app.schemas.user import UserCreate, UserOut
@@ -106,7 +102,7 @@ async def login(
 
 
 @router.post("/refresh", response_model=Token)
-def refresh_token(token: str):
+async def refresh_token(token: str):
     if not token:
         raise HTTPException(400, "Refresh token manquant.")
 
@@ -119,3 +115,8 @@ def refresh_token(token: str):
     tokens = create_tokens(data={"sub": user_id})
 
     return Token(**tokens)
+
+
+@router.get("/me", response_model=UserOut, status_code=status.HTTP_200_OK)
+async def get_me(auth_user: User = Depends(get_current_user)):
+    return auth_user
