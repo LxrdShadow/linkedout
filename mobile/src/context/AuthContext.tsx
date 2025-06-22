@@ -3,11 +3,13 @@ import * as SecureStore from "expo-secure-store";
 import api from "../lib/axios";
 import { Alert } from "react-native";
 import { handleApiError } from "../lib/errors";
+import Toast from "react-native-toast-message";
 
 type User = {
     id: string;
     email: string;
     username?: string;
+    is_verified: boolean;
 };
 
 type AuthContextType = {
@@ -19,6 +21,8 @@ type AuthContextType = {
         password: string,
         confirmPassword: string,
     ) => Promise<boolean>;
+    verifyOTP: (email: string, otp: string) => Promise<boolean>;
+    putUsername: (username: string) => Promise<boolean>;
     logout: () => Promise<void>;
     checkAuth: () => Promise<void>;
 };
@@ -86,15 +90,41 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
             );
             await storeTokens(data.access_token, data.refresh_token);
 
-            const { data: userData } = await api.get("/auth/me");
-            setUser(userData.user);
+            await getMe();
 
             setIsLoading(false);
             return true;
         } catch (err: any) {
             setUser(null);
             const newErr = handleApiError(err);
-            Alert.alert(String(newErr));
+            console.log(newErr);
+            Toast.show({
+                type: "error",
+                text1: "Erreur",
+                text1Style: { fontSize: 16, fontWeight: "bold" },
+                text2: String(newErr),
+                text2Style: { fontSize: 13 },
+            });
+            return false;
+        }
+    };
+
+    const getMe = async () => {
+        setIsLoading(true);
+        try {
+            const { data: userData } = await api.get("/auth/me");
+            setUser(userData.user);
+            setIsLoading(false);
+        } catch (err: any) {
+            setUser(null);
+            const newErr = handleApiError(err);
+            Toast.show({
+                type: "error",
+                text1: "Erreur",
+                text1Style: { fontSize: 16, fontWeight: "bold" },
+                text2: String(newErr),
+                text2Style: { fontSize: 13 },
+            });
             console.log(newErr);
             return false;
         }
@@ -116,8 +146,64 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
             return true;
         } catch (err: any) {
             const newErr = handleApiError(err);
-            Alert.alert(String(newErr));
+            Toast.show({
+                type: "error",
+                text1: "Erreur",
+                text1Style: { fontSize: 16, fontWeight: "bold" },
+                text2: String(newErr),
+                text2Style: { fontSize: 13 },
+            });
             console.log(newErr);
+            return false;
+        }
+    };
+
+    const verifyOTP = async (email: string, otp: string) => {
+        setIsLoading(true);
+        try {
+            const { data } = await api.post("/auth/verify-otp", {
+                email,
+                code: otp,
+            });
+
+            setUser(data);
+            setIsLoading(false);
+            return true;
+        } catch (err: any) {
+            const newErr = handleApiError(err);
+            Toast.show({
+                type: "error",
+                text1: "Erreur",
+                text1Style: { fontSize: 16, fontWeight: "bold" },
+                text2: String(newErr),
+                text2Style: { fontSize: 13 },
+            });
+            console.log(newErr);
+            return false;
+        }
+    };
+
+    const putUsername = async (username: string) => {
+        setIsLoading(true);
+        try {
+            const { data } = await api.post(`/auth/set-username/${user?.id}`, {
+                username,
+            });
+            await storeTokens(data.access_token, data.refresh_token);
+            await getMe();
+
+            setIsLoading(false);
+            return true;
+        } catch (err: any) {
+            const newErr = handleApiError(err);
+            Toast.show({
+                type: "error",
+                text1: "Erreur",
+                text1Style: { fontSize: 16, fontWeight: "bold" },
+                text2: String(newErr),
+                text2Style: { fontSize: 13 },
+            });
+            console.error(newErr);
             return false;
         }
     };
@@ -141,6 +227,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
                 isLoading,
                 login,
                 register,
+                verifyOTP,
+                putUsername,
                 logout,
                 checkAuth,
             }}

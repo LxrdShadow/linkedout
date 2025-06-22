@@ -21,3 +21,7 @@ class UserOut(UserBase):
 
     class Config:
         from_attributes: True
+
+
+class UsernameSet(BaseModel):
+    username: str

@@ -11,7 +11,7 @@ from app.auth.jwt import create_tokens, decode_token
 from app.models.user import User
 from app.schemas.otp import OTPVerify
 from app.schemas.token import Token
-from app.schemas.user import UserCreate, UserOut
+from app.schemas.user import UserCreate, UsernameSet, UserOut
 from app.services.email import send_otp_email
 
 router = APIRouter(prefix="/auth", tags=["auth"])
@@ -49,7 +49,6 @@ async def register(user_in: UserCreate, db: Session = Depends(get_db)):
 
 @router.post("/verify-otp", response_model=UserOut, status_code=status.HTTP_200_OK)
 async def verify_OTP(otp: OTPVerify, db: Session = Depends(get_db)):
-    # TODO: Verify the OTP sent to the user by email
     user = verify_otp(db, otp)
     if not user:
         raise HTTPException(400, detail="OTP invalide ou expiré.")
@@ -78,9 +77,16 @@ async def resend_OTP(email: str, db: Session = Depends(get_db)):
 
 
 @router.post("/set-username/{user_id}", status_code=status.HTTP_200_OK)
-async def set_username(user_id: str, username: str, db: Session = Depends(get_db)):
-    user = crud_user.set_username(db, user_id, username)
-    tokens = create_tokens(data={"sub": user.id})
+async def set_username(
+    user_id: str, username_in: UsernameSet, db: Session = Depends(get_db)
+):
+    user = crud_user.get_user(db, user_id)
+
+    if not user:
+        raise HTTPException(status_code=404, detail="Utilisateur non trouvé.")
+
+    user = crud_user.set_username(db, user_id, username_in.username)
+    tokens = create_tokens(data={"sub": str(user.id)})
 
     return Token(**tokens)
 
@@ -102,7 +108,7 @@ async def login(
             detail="Identifiant ou mot de passe incorrect.",
             headers={"WWW-Authenticate": "Bearer"},
         )
-    tokens = create_tokens(data={"sub": user.id})
+    tokens = create_tokens(data={"sub": str(user.id)})
 
     return Token(**tokens)
 

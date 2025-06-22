@@ -1,10 +1,10 @@
 import axios from "axios";
 import { router } from "expo-router";
 import * as SecureStore from "expo-secure-store";
-import { Alert } from "react-native";
+import { SERVER_URL } from "../constants";
 
 const api = axios.create({
-    baseURL: "http://192.168.43.53:8000/",
+    baseURL: SERVER_URL,
     timeout: 10000,
     headers: {
         "Content-Type": "application/json",

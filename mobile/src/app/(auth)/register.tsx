@@ -1,20 +1,21 @@
+import { useRouter } from "expo-router";
+import { useState } from "react";
+import { Text, TouchableOpacity, View } from "react-native";
+
 import CustomButton from "@/src/components/CustomButton";
 import CustomTextInput from "@/src/components/CustomTextInput";
 import { useAuth } from "@/src/context/AuthContext";
-import { useRouter } from "expo-router";
-import { useState } from "react";
-import { Alert, Text, TouchableOpacity, View } from "react-native";
 
 const Register = () => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
-    const { register, error } = useAuth();
+    const { register } = useAuth();
     const router = useRouter();
 
     const handleSignup = async () => {
         const success = await register(email, password, confirmPassword);
-        if (success) router.replace("/verifyOTP");
+        if (success) router.push({ pathname: "/verifyOTP", params: { email } });
     };
 
     return (
@@ -31,18 +32,24 @@ const Register = () => {
                         placeholder="Email"
                         keyboardType="email-address"
                         autoCapitalize="none"
+                        onChangeText={setEmail}
+                        value={email}
                     />
                     <CustomTextInput
                         label="Mot de passe"
                         inputClassName="bg-primary-0 rounded-xl p-3 mb-1 text-lg"
                         placeholder="Mot de passe"
                         secureTextEntry
+                        onChangeText={setPassword}
+                        value={password}
                     />
                     <CustomTextInput
                         label="Confirmer le mot de passe"
                         inputClassName="bg-primary-0 rounded-xl p-3 mb-1 text-lg"
                         placeholder="Mot de passe de confirmation"
                         secureTextEntry
+                        onChangeText={setConfirmPassword}
+                        value={confirmPassword}
                     />
                 </View>
 

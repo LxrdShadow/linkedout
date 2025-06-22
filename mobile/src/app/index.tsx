@@ -4,8 +4,10 @@ import { useAuth } from "../context/AuthContext";
 const Index = () => {
     const { user, isLoading } = useAuth();
 
-    if (!user && !isLoading) {
+    if ((!user || !user.is_verified) && !isLoading) {
         return <Redirect href="/login" />;
+    } else if (!user?.username && !isLoading) {
+        return <Redirect href="/setUsername" />;
     } else if (!isLoading) {
         return <Redirect href="/dashboard" />;
     } else {
