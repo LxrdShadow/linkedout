@@ -52,7 +52,7 @@ async def verify_OTP(otp: OTPVerify, db: Session = Depends(get_db)):
     # TODO: Verify the OTP sent to the user by email
     user = verify_otp(db, otp)
     if not user:
-        raise HTTPException(400, detail="Invalid or expired OTP.")
+        raise HTTPException(400, detail="OTP invalide ou expiré.")
     return user
 
 
@@ -89,6 +89,12 @@ async def set_username(user_id: str, username: str, db: Session = Depends(get_db
 async def login(
     form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)
 ):
+    if not form_data.username or not form_data.password:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Veuillez remplir tout les champs.",
+        )
+
     user = crud_user.get_user_by_email(db, form_data.username)
     if not user or not pwd_context.verify(form_data.password, user.hashed_password):
         raise HTTPException(
@@ -103,16 +109,16 @@ async def login(
 
 @router.post("/refresh", response_model=Token)
 async def refresh_token(body=Body()):
-    token = body["token"]
+    token = body.get("token")
     if not token:
-        raise HTTPException(400, "Refresh token manquant.")
+        raise HTTPException(400, "[hide]Refresh token manquant.")
 
     try:
         payload = decode_token(token)
         user_id = payload.get("sub")
     except PyJWTError as e:
         print(str(e))
-        raise HTTPException(401, "Refresh token invalide")
+        raise HTTPException(401, "[hide]Refresh token invalide")
 
     tokens = create_tokens(data={"sub": user_id})
 

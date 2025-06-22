@@ -1,13 +1,20 @@
 import CustomButton from "@/src/components/CustomButton";
 import CustomTextInput from "@/src/components/CustomTextInput";
+import { useAuth } from "@/src/context/AuthContext";
 import { useRouter } from "expo-router";
-import { Text, TouchableOpacity, View } from "react-native";
+import { useState } from "react";
+import { Alert, Text, TouchableOpacity, View } from "react-native";
 
 const Register = () => {
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
+    const [confirmPassword, setConfirmPassword] = useState("");
+    const { register, error } = useAuth();
     const router = useRouter();
 
-    const handleSignup = () => {
-        router.push("/verifyOTP");
+    const handleSignup = async () => {
+        const success = await register(email, password, confirmPassword);
+        if (success) router.replace("/verifyOTP");
     };
 
     return (

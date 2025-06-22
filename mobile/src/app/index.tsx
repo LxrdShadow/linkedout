@@ -1,15 +1,15 @@
 import { Redirect } from "expo-router";
 import { useAuth } from "../context/AuthContext";
-import { useEffect } from "react";
 
 const Index = () => {
-    const { user, login } = useAuth();
-    useEffect(() => {
-        // login("test@gmail.com");
-    }, []);
+    const { user, isLoading } = useAuth();
 
-    if (!user) {
+    if (!user && !isLoading) {
         return <Redirect href="/login" />;
+    } else if (!isLoading) {
+        return <Redirect href="/dashboard" />;
+    } else {
+        return null;
     }
 };
 

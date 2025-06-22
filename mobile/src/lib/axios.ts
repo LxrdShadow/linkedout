@@ -55,7 +55,6 @@ api.interceptors.response.use(
                 );
                 return api(originalRequest);
             } catch (refreshErr) {
-                router.dismissAll();
                 router.replace("/login");
                 return Promise.reject(refreshErr);
             }

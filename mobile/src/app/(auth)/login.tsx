@@ -12,18 +12,13 @@ export default function LoginScreen() {
     const router = useRouter();
 
     const handleLogin = async () => {
-        try {
-            const token = await login(email, password);
-            // Alert.alert(JSON.stringify(token));
-            // router.replace("/(tabs)/dashboard");
-        } catch {
-            Alert.alert(String(error));
-        }
+        const success = await login(email, password);
+        if (success) router.replace("/dashboard");
     };
 
     return (
         <View className="flex-1 bg-white p-6 justify-center item-center gap-20">
-            <Text className="text-5xl text-gray-600 text-center font-bold mb-8 animate-pulse duration-300">
+            <Text className="text-5xl text-gray-600 text-center font-bold mb-8 animate-pulse duration-150">
                 Bienvenue
             </Text>
 
