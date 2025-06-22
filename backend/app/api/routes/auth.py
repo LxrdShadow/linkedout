@@ -5,17 +5,18 @@ from sqlalchemy.orm import Session
 
 import app.crud.user as crud_user
 from app.api.deps import get_db
-from app.auth.auth import create_otp
+from app.auth.auth import create_otp, verify_otp
 from app.auth.jwt import create_access_token
+from app.schemas.otp import OTPVerify
 from app.schemas.token import Token
-from app.schemas.user import UserCreate
+from app.schemas.user import UserCreate, UserOut
 from app.services.email import send_otp_email
 
 router = APIRouter(prefix="/auth", tags=["auth"])
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 
-@router.post("/register", status_code=status.HTTP_201_CREATED)
+@router.post("/register", response_model=UserOut, status_code=status.HTTP_201_CREATED)
 async def register(user_in: UserCreate, db: Session = Depends(get_db)):
     if len(user_in.password) < 4:
         raise HTTPException(400, "Le mot de passe doit avoir au moins 4 caractères.")
@@ -44,10 +45,34 @@ async def register(user_in: UserCreate, db: Session = Depends(get_db)):
     return user
 
 
-@router.post("/verify", status_code=status.HTTP_200_OK)
-async def verify_OTP(otp: str, db: Session = Depends(get_db)):
+@router.post("/verify-otp", response_model=UserOut, status_code=status.HTTP_200_OK)
+async def verify_OTP(otp: OTPVerify, db: Session = Depends(get_db)):
     # TODO: Verify the OTP sent to the user by email
-    ...
+    user = verify_otp(db, otp)
+    if not user:
+        raise HTTPException(400, detail="Invalid or expired OTP.")
+    return user
+
+
+@router.post("/resend-otp", response_model=UserOut, status_code=status.HTTP_200_OK)
+async def resend_OTP(email: str, db: Session = Depends(get_db)):
+    user = crud_user.get_user_by_email(db, email)
+    if user:
+        if user.is_verified:
+            raise HTTPException(400, "Email déja vérifié.")
+    else:
+        raise HTTPException(
+            404, "Compte introuvable. Verifiez votre email ou inscrivez-vous."
+        )
+
+    try:
+        otp = create_otp(db, user.id)
+        await send_otp_email(user.email, otp)
+    except Exception:
+        raise HTTPException(
+            status_code=500, detail="Erreur lors de l'envoi de l'email."
+        )
+    return user
 
 
 @router.post("/set-username/{user_id}", status_code=status.HTTP_200_OK)

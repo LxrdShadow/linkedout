@@ -10,6 +10,7 @@ from app.api.deps import get_db
 from app.auth.jwt import decode_access_token
 from app.crud.user import get_user, get_user_by_email
 from app.models.otp import OTP
+from app.schemas.otp import OTPVerify
 
 oauth2_schema = OAuth2PasswordBearer(tokenUrl="auth/login")
 
@@ -48,8 +49,8 @@ def create_otp(db: Session, user_id: str):
     return code
 
 
-def verify_otp(db: Session, email: str, code: str):
-    user = get_user_by_email(db, email)
+def verify_otp(db: Session, otp: OTPVerify):
+    user = get_user_by_email(db, otp.email)
     if not user:
         return None
 
@@ -59,7 +60,7 @@ def verify_otp(db: Session, email: str, code: str):
         .order_by(OTP.expires_at.desc())
         .first()
     )
-    if latest and latest.code == code and latest.expires_at > datetime.now():
+    if latest and latest.code == otp.code and latest.expires_at > datetime.now():
         user.is_verified = True
         db.commit()
         db.refresh(user)
