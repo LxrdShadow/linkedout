@@ -29,20 +29,14 @@ export default function CustomTextInput({
                 </Text>
             )}
 
-            <View
-                className={cn(
-                    "flex-row items-center py-2",
-                    error
-                        ? "border-red-500"
-                        : "border-gray-300 dark:border-neutral-600",
-                    !editable && "opacity-50",
-                )}
-            >
+            <View className={cn("flex-row items-center py-1")}>
                 {leftIcon && <View className="mr-2">{leftIcon}</View>}
 
                 <TextInput
                     className={cn(
                         "flex-1 text-base text-black dark:text-white",
+                        error && "border border-red-300",
+                        !editable && "opacity-50",
                         inputClassName,
                     )}
                     placeholderTextColor="#9CA3AF"
@@ -53,9 +47,7 @@ export default function CustomTextInput({
                 {rightIcon && <View className="ml-2">{rightIcon}</View>}
             </View>
 
-            {error && (
-                <Text className="mt-1 text-sm text-red-500">{error}</Text>
-            )}
+            {error && <Text className="text-sm text-red-500">{error}</Text>}
         </View>
     );
 }

@@ -18,8 +18,7 @@ export default function LoginScreen() {
 
     return (
         <View className="flex-1 bg-white p-6 justify-center item-center gap-20">
-            {/* Header */}
-            <Text className="text-5xl text-gray-600 text-center mb-8">
+            <Text className="text-5xl text-gray-600 text-center font-bold mb-8 animate-pulse duration-300">
                 Bienvenue
             </Text>
 
@@ -29,6 +28,7 @@ export default function LoginScreen() {
                     placeholder="Email"
                     keyboardType="email-address"
                     onChangeText={setEmail}
+                    value={email}
                     autoCapitalize="none"
                 />
 
@@ -36,6 +36,7 @@ export default function LoginScreen() {
                     inputClassName="bg-primary-0 rounded-xl p-3 mb-2 text-lg"
                     placeholder="Mot de passe"
                     onChangeText={setPassword}
+                    value={password}
                     secureTextEntry={true}
                 />
 
@@ -49,13 +50,7 @@ export default function LoginScreen() {
                     textClassName="font-bold text-xl"
                     variant="ghost"
                 />
-                {/*<TouchableOpacity className="bg-primary-10 py-3 rounded-xl mb-4">
-                <Text className="text-neutral-600 text-center text-xl font-bold">
-                    Log in
-                </Text>
-            </TouchableOpacity>*/}
 
-                {/* Sign Up Link */}
                 <View className="flex-row justify-center mt-4">
                     <Text className="text-gray-600">
                         Pas encore de compte?{" "}
