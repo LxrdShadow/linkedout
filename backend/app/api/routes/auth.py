@@ -16,15 +16,14 @@ pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 @router.post("/register", status_code=status.HTTP_201_CREATED)
 async def register(user: UserCreate, db: Session = Depends(get_db)):
     if len(user.password) < 4:
-        raise HTTPException(400, "Le mot de passe doit avoir au moins 4 caractères")
+        raise HTTPException(400, "Le mot de passe doit avoir au moins 4 caractères.")
+
+    if user.password != user.confirmPassword:
+        raise HTTPException(400, "Les mots de passes ne correspondent pas.")
 
     existing = crud_user.get_user_by_email(db, user.email)
     if existing:
-        raise HTTPException(400, "Email déja utilisé")
-
-    existing = crud_user.get_user_by_username(db, user.username)
-    if existing:
-        raise HTTPException(400, "Nom d'utilisateur déjà utilisé")
+        raise HTTPException(400, "Email déja utilisé.")
 
     # TODO: Send OTP to confirm the email
     return crud_user.create_user(db, user)

@@ -1,4 +1,5 @@
 import axios from "axios";
+import { router } from "expo-router";
 import * as SecureStore from "expo-secure-store";
 import { Alert } from "react-native";
 
@@ -25,11 +26,17 @@ api.interceptors.response.use(
     (response) => response,
     (error) => {
         const status = error.response?.status;
+        const getToLogin = () => {
+            router.dismissAll();
+            router.replace("/login");
+        };
 
         if (status === 401) {
             Alert.alert("Unauthorized", "Please log in again.");
+            getToLogin();
         } else if (status === 500) {
             Alert.alert("Server error", "Something broke on the backend.");
+            getToLogin();
         }
 
         return Promise.reject(error);
