@@ -6,8 +6,8 @@ from app.core.config import (
     MAIL_PASSWORD,
     MAIL_PORT,
     MAIL_SERVER,
-    MAIL_SSL,
-    MAIL_TLS,
+    MAIL_SSL_TLS,
+    MAIL_STARTTLS,
     MAIL_USERNAME,
 )
 
@@ -18,8 +18,8 @@ conf = ConnectionConfig(
     MAIL_PORT=MAIL_PORT,
     MAIL_SERVER=MAIL_SERVER,
     MAIL_FROM_NAME=MAIL_FROM_NAME,
-    MAIL_TLS=MAIL_TLS,
-    MAIL_SSL=MAIL_SSL,
+    MAIL_STARTTLS=MAIL_STARTTLS,
+    MAIL_SSL_TLS=MAIL_SSL_TLS,
     USE_CREDENTIALS=True,
     VALIDATE_CERTS=True,
     TEMPLATE_FOLDER="app/templates",

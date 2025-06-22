@@ -17,4 +17,4 @@ class OTP(Base):
     created_at = Column(DateTime, default=datetime.now)
     expires_at = Column(DateTime, nullable=False)
 
-    user = relationship("User", back_populates="otps")
+    user = relationship("User", backref="otps")

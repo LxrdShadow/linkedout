@@ -5,28 +5,33 @@ from sqlalchemy.orm import Session
 
 import app.crud.user as crud_user
 from app.api.deps import get_db
+from app.auth.auth import create_otp
 from app.auth.jwt import create_access_token
 from app.schemas.token import Token
 from app.schemas.user import UserCreate
+from app.services.email import send_otp_email
 
 router = APIRouter(prefix="/auth", tags=["auth"])
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 
 @router.post("/register", status_code=status.HTTP_201_CREATED)
-async def register(user: UserCreate, db: Session = Depends(get_db)):
-    if len(user.password) < 4:
+async def register(user_in: UserCreate, db: Session = Depends(get_db)):
+    if len(user_in.password) < 4:
         raise HTTPException(400, "Le mot de passe doit avoir au moins 4 caractères.")
 
-    if user.password != user.confirmPassword:
+    if user_in.password != user_in.confirmPassword:
         raise HTTPException(400, "Les mots de passes ne correspondent pas.")
 
-    existing = crud_user.get_user_by_email(db, user.email)
+    existing = crud_user.get_user_by_email(db, user_in.email)
     if existing:
         raise HTTPException(400, "Email déja utilisé.")
 
     # TODO: Send OTP to confirm the email
-    return crud_user.create_user(db, user)
+    user = crud_user.create_user(db, user_in)
+    otp = create_otp(db, user.id)
+    await send_otp_email(user.email, otp)
+    return user
 
 
 @router.post("/verify", status_code=status.HTTP_200_OK)
