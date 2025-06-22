@@ -9,7 +9,7 @@ const Index = () => {
     } else if (!user?.username && !isLoading) {
         return <Redirect href="/setUsername" />;
     } else if (!isLoading) {
-        return <Redirect href="/dashboard" />;
+        return <Redirect href="/(tabs)" />;
     } else {
         return null;
     }

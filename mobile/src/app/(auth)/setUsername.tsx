@@ -12,7 +12,7 @@ const SetUsername = () => {
 
     const handleSetUsername = async () => {
         const success = await putUsername(username);
-        if (success) router.replace("/dashboard");
+        if (success) router.replace("/(tabs)");
     };
 
     return (
