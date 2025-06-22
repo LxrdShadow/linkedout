@@ -8,7 +8,7 @@ import { View, Text } from "react-native";
 const SetUsername = () => {
     const [username, setUsername] = useState("");
     const router = useRouter();
-    const { putUsername } = useAuth();
+    const { putUsername, isLoading } = useAuth();
 
     const handleSetUsername = async () => {
         const success = await putUsername(username);
@@ -35,6 +35,7 @@ const SetUsername = () => {
                         onPress={handleSetUsername}
                         textClassName="font-bold text-xl"
                         variant="primary"
+                        isLoading={isLoading}
                     />
                 </View>
             </View>

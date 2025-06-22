@@ -1,7 +1,6 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 import * as SecureStore from "expo-secure-store";
 import api from "../lib/axios";
-import { Alert } from "react-native";
 import { handleApiError } from "../lib/errors";
 import Toast from "react-native-toast-message";
 
@@ -97,7 +96,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
         } catch (err: any) {
             setUser(null);
             const newErr = handleApiError(err);
-            console.log(newErr);
+            console.log(err);
             Toast.show({
                 type: "error",
                 text1: "Erreur",
@@ -105,6 +104,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
                 text2: String(newErr),
                 text2Style: { fontSize: 13 },
             });
+            setIsLoading(false);
             return false;
         }
     };
@@ -125,7 +125,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
                 text2: String(newErr),
                 text2Style: { fontSize: 13 },
             });
-            console.log(newErr);
+            console.log(err);
+            setIsLoading(false);
             return false;
         }
     };
@@ -153,7 +154,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
                 text2: String(newErr),
                 text2Style: { fontSize: 13 },
             });
-            console.log(newErr);
+            console.log(err);
+            setIsLoading(false);
             return false;
         }
     };
@@ -178,7 +180,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
                 text2: String(newErr),
                 text2Style: { fontSize: 13 },
             });
-            console.log(newErr);
+            console.log(err);
+            setIsLoading(false);
             return false;
         }
     };
@@ -203,7 +206,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
                 text2: String(newErr),
                 text2Style: { fontSize: 13 },
             });
-            console.error(newErr);
+            console.log(err);
+            setIsLoading(false);
             return false;
         }
     };

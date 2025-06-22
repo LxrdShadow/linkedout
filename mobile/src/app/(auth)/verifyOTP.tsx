@@ -9,7 +9,7 @@ const VerifyOTP = () => {
     const router = useRouter();
     const [otp, setOtp] = useState("");
     const { email } = useLocalSearchParams<{ email: string }>();
-    const { verifyOTP } = useAuth();
+    const { verifyOTP, isLoading } = useAuth();
 
     const handleVerifyOTP = async () => {
         const success = await verifyOTP(email, otp);
@@ -48,6 +48,7 @@ const VerifyOTP = () => {
                         onPress={handleVerifyOTP}
                         textClassName="font-bold text-xl"
                         variant="primary"
+                        isLoading={isLoading}
                     />
                 </View>
             </View>

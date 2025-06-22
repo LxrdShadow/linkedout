@@ -1,4 +1,4 @@
-import { Pressable, Text } from "react-native";
+import { ActivityIndicator, Pressable, Text } from "react-native";
 import { cn } from "../lib/utils";
 
 type Props = {
@@ -8,6 +8,7 @@ type Props = {
     variant?: "primary" | "secondary" | "ghost";
     className?: string;
     textClassName?: string;
+    isLoading?: boolean;
 };
 
 export default function CustomButton({
@@ -17,6 +18,7 @@ export default function CustomButton({
     variant = "primary",
     className = "",
     textClassName = "",
+    isLoading = false,
 }: Props) {
     const baseStyles =
         "px-4 py-3 rounded-lg items-center justify-center my-2 transition-opacity";
@@ -44,9 +46,16 @@ export default function CustomButton({
                 className,
             )}
         >
-            <Text className={cn(textVariants[variant], textClassName)}>
-                {title}
-            </Text>
+            {isLoading ? (
+                <ActivityIndicator
+                    size="small"
+                    className={`${variant === "primary" ? "text-white" : "text-primary"}`}
+                />
+            ) : (
+                <Text className={cn(textVariants[variant], textClassName)}>
+                    {title}
+                </Text>
+            )}
         </Pressable>
     );
 }

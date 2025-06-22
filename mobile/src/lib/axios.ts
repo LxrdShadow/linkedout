@@ -31,14 +31,17 @@ api.interceptors.response.use(
         if (
             status === 401 &&
             !originalRequest._retry &&
-            !(originalRequest.url || "").includes("/auth/refresh")
+            !["/auth/login", "/auth/register", "/auth/refresh"].some((url) =>
+                (originalRequest.url || "").includes(url),
+            )
         ) {
             originalRequest._retry = true;
 
             try {
                 const refreshToken =
                     await SecureStore.getItemAsync("refresh_token");
-                if (!refreshToken) throw new Error("Aucun refresh token");
+                if (!refreshToken)
+                    throw new Error("[hide]Aucun refresh token trouvé");
 
                 const { data } = await api.post("/auth/refresh", {
                     token: refreshToken,

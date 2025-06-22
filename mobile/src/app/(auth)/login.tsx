@@ -7,7 +7,7 @@ import CustomButton from "@/src/components/CustomButton";
 import CustomTextInput from "@/src/components/CustomTextInput";
 
 export default function LoginScreen() {
-    const { login } = useAuth();
+    const { login, isLoading } = useAuth();
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const router = useRouter();
@@ -25,7 +25,7 @@ export default function LoginScreen() {
 
             <View>
                 <CustomTextInput
-                    inputClassName="bg-primary-0 rounded-xl p-3 mb-2 text-lg"
+                    inputClassName="bg-secondary rounded-xl p-3 mb-2 text-lg"
                     placeholder="Email"
                     keyboardType="email-address"
                     onChangeText={setEmail}
@@ -34,7 +34,7 @@ export default function LoginScreen() {
                 />
 
                 <CustomTextInput
-                    inputClassName="bg-primary-0 rounded-xl p-3 mb-2 text-lg"
+                    inputClassName="bg-secondary rounded-xl p-3 mb-2 text-lg"
                     placeholder="Mot de passe"
                     onChangeText={setPassword}
                     value={password}
@@ -49,7 +49,8 @@ export default function LoginScreen() {
                     title="Se connecter"
                     onPress={handleLogin}
                     textClassName="font-bold text-xl"
-                    variant="ghost"
+                    variant="primary"
+                    isLoading={isLoading}
                 />
 
                 <View className="flex-row justify-center mt-4">

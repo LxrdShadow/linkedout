@@ -10,7 +10,7 @@ const Register = () => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
-    const { register } = useAuth();
+    const { register, isLoading } = useAuth();
     const router = useRouter();
 
     const handleSignup = async () => {
@@ -59,6 +59,7 @@ const Register = () => {
                         onPress={handleSignup}
                         textClassName="font-bold text-xl"
                         variant="ghost"
+                        isLoading={isLoading}
                     />
 
                     <View className="flex-row justify-center mt-4">
