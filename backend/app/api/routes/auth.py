@@ -25,12 +25,22 @@ async def register(user_in: UserCreate, db: Session = Depends(get_db)):
 
     existing = crud_user.get_user_by_email(db, user_in.email)
     if existing:
-        raise HTTPException(400, "Email déja utilisé.")
+        if existing.is_verified:
+            raise HTTPException(400, "Email déja vérifié.")
+        else:
+            # TODO: HTTPException: Should resend verification code with /resend-otp
+            # and check if the cooldown is complete
+            user = existing
+    else:
+        user = crud_user.create_user(db, user_in)
 
-    # TODO: Send OTP to confirm the email
-    user = crud_user.create_user(db, user_in)
-    otp = create_otp(db, user.id)
-    await send_otp_email(user.email, otp)
+    try:
+        otp = create_otp(db, user.id)
+        await send_otp_email(user.email, otp)
+    except Exception:
+        raise HTTPException(
+            status_code=500, detail="Erreur lors de l'envoi de l'email."
+        )
     return user
 
 
