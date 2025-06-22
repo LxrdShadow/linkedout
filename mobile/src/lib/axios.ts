@@ -4,7 +4,7 @@ import * as SecureStore from "expo-secure-store";
 import { Alert } from "react-native";
 
 const api = axios.create({
-    baseURL: "http://localhost:8000/",
+    baseURL: "http://192.168.43.53:8000/",
     timeout: 10000,
     headers: {
         "Content-Type": "application/json",
@@ -13,7 +13,7 @@ const api = axios.create({
 
 api.interceptors.request.use(
     async (config) => {
-        const token = await SecureStore.getItemAsync("accessToken");
+        const token = await SecureStore.getItemAsync("access_token");
         if (token) {
             config.headers.Authorization = `Bearer ${token}`;
         }
@@ -41,7 +41,7 @@ api.interceptors.response.use(
                 if (!refreshToken) throw new Error("Aucun refresh token");
 
                 const { data } = await api.post("/auth/refresh", {
-                    refresh_token: refreshToken,
+                    token: refreshToken,
                 });
                 const newAccessToken = data.access_token;
                 const newRefreshToken = data.refresh_token;
@@ -55,6 +55,8 @@ api.interceptors.response.use(
                 );
                 return api(originalRequest);
             } catch (refreshErr) {
+                router.dismissAll();
+                router.replace("/login");
                 return Promise.reject(refreshErr);
             }
         }

@@ -13,8 +13,12 @@ type AuthContextType = {
     user: User | null;
     isLoading: boolean;
     error: string | null;
-    login: (email: string, password: string) => Promise<void>;
-    register: (email: string, password: string) => Promise<void>;
+    login: (email: string, password: string) => Promise<object>;
+    register: (
+        email: string,
+        password: string,
+        confirmPassword: string,
+    ) => Promise<void>;
     logout: () => Promise<void>;
     checkAuth: () => Promise<void>;
 };
@@ -34,63 +38,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     };
 
     const getAccessToken = () => SecureStore.getItemAsync("access_token");
-    const getRefreshToken = () => SecureStore.getItemAsync("refresh_token");
 
     const clearTokens = async () => {
         await SecureStore.deleteItemAsync("access_token");
         await SecureStore.deleteItemAsync("refresh_token");
     };
-
-    const refreshTokens = async () => {
-        try {
-            const refreshToken = await getRefreshToken();
-            if (!refreshToken) throw new Error("Aucun refresh token");
-
-            const { data } = await api.post("/auth/refresh", {
-                refresh_token: refreshToken,
-            });
-
-            await storeTokens(data.accessToken, data.refreshToken);
-
-            return data.accessToken;
-        } catch (err) {
-            await logout();
-            throw err;
-        }
-    };
-
-    // Auto-attach access token + handle refresh logic
-    useEffect(() => {
-        const setupInterceptors = () => {
-            api.interceptors.response.use(
-                (response) => response,
-                async (error) => {
-                    const originalRequest = error.config;
-                    const status = error.response?.status;
-
-                    if (
-                        status === 401 &&
-                        !originalRequest._retry &&
-                        !(originalRequest.url || "").includes("/auth/refresh")
-                    ) {
-                        originalRequest._retry = true;
-
-                        try {
-                            const newAccessToken = await refreshTokens();
-                            originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
-                            return api(originalRequest);
-                        } catch (refreshErr) {
-                            return Promise.reject(refreshErr);
-                        }
-                    }
-
-                    return Promise.reject(error);
-                },
-            );
-        };
-
-        setupInterceptors();
-    }, []);
 
     const checkAuth = async () => {
         setIsLoading(true);
@@ -104,7 +56,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
             const { data } = await api.get("/auth/me");
             setUser(data.user);
         } catch (err) {
-            console.warn("Auth check failed", err);
+            console.warn(
+                "Erreur lors de la vérification de l'utilisateur",
+                err,
+            );
             setUser(null);
         } finally {
             setIsLoading(false);
@@ -118,28 +73,53 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     const login = async (email: string, password: string) => {
         setIsLoading(true);
         setError(null);
+        let tokens = {};
         try {
-            const { data } = await api.post("/auth/login", { email, password });
-            await storeTokens(data.accessToken, data.refreshToken);
+            const { data } = await api.post(
+                "/auth/login",
+                {
+                    username: email,
+                    password,
+                },
+                {
+                    headers: {
+                        "Content-Type": "application/x-www-form-urlencoded",
+                    },
+                },
+            );
+            await storeTokens(data.access_token, data.refresh_token);
+            tokens = await data;
 
             const { data: userData } = await api.get("/auth/me");
             setUser(userData.user);
         } catch (err: any) {
-            setError(err.response?.data?.message || "Login failed");
+            setError(
+                err.response?.data?.message || "Erreur lors de la connexion",
+            );
             setUser(null);
         } finally {
             setIsLoading(false);
+            return tokens;
         }
     };
 
-    const register = async (email: string, password: string) => {
+    const register = async (
+        email: string,
+        password: string,
+        confirmPassword: string,
+    ) => {
         setIsLoading(true);
         setError(null);
         try {
-            await api.post("/auth/register", { email, password });
-            await login(email, password);
+            await api.post("/auth/register", {
+                email,
+                password,
+                confirmPassword,
+            });
         } catch (err: any) {
-            setError(err.response?.data?.message || "Registration failed");
+            setError(
+                err.response?.data?.message || "Erreur lors de l'inscription",
+            );
         } finally {
             setIsLoading(false);
         }
@@ -151,7 +131,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
             await clearTokens();
             setUser(null);
         } catch (err) {
-            console.warn("Logout error:", err);
+            console.warn("Erreur lors de la déconnexion", err);
         } finally {
             setIsLoading(false);
         }

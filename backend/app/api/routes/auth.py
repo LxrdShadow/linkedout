@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Body, Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordRequestForm
 from jwt import PyJWTError
 from passlib.context import CryptContext
@@ -102,14 +102,16 @@ async def login(
 
 
 @router.post("/refresh", response_model=Token)
-async def refresh_token(token: str):
+async def refresh_token(body=Body()):
+    token = body["token"]
     if not token:
         raise HTTPException(400, "Refresh token manquant.")
 
     try:
         payload = decode_token(token)
         user_id = payload.get("sub")
-    except PyJWTError:
+    except PyJWTError as e:
+        print(str(e))
         raise HTTPException(401, "Refresh token invalide")
 
     tokens = create_tokens(data={"sub": user_id})

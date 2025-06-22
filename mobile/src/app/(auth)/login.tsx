@@ -1,19 +1,24 @@
 import { useState } from "react";
-import { View, Text, TouchableOpacity } from "react-native";
+import { View, Text, TouchableOpacity, Alert } from "react-native";
 import { useAuth } from "../../context/AuthContext";
 import { useRouter } from "expo-router";
 import CustomButton from "@/src/components/CustomButton";
 import CustomTextInput from "@/src/components/CustomTextInput";
 
 export default function LoginScreen() {
-    const { login } = useAuth();
+    const { login, error } = useAuth();
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const router = useRouter();
 
-    const handleLogin = () => {
-        login(email);
-        router.replace("/(tabs)/dashboard");
+    const handleLogin = async () => {
+        try {
+            const token = await login(email, password);
+            // Alert.alert(JSON.stringify(token));
+            // router.replace("/(tabs)/dashboard");
+        } catch {
+            Alert.alert(String(error));
+        }
     };
 
     return (
