@@ -1,7 +1,7 @@
 from datetime import datetime
 from uuid import uuid4
 
-from sqlalchemy import Column, DateTime, Float, ForeignKey, String, Text
+from sqlalchemy import UUID, Column, DateTime, Float, ForeignKey, String, Text
 
 from app.db.base import Base
 
@@ -9,8 +9,8 @@ from app.db.base import Base
 class Feedback(Base):
     __tablename__ = "feedback"
 
-    id = Column(String, primary_key=True, default=uuid4)
-    answer_id = Column(String, ForeignKey("answers.id", ondelete="CASCADE"))
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid4)
+    answer_id = Column(UUID(as_uuid=True), ForeignKey("answers.id", ondelete="CASCADE"))
     category = Column(String)
     score = Column(Float)
     comment = Column(Text)
