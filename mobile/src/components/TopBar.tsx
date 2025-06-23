@@ -1,5 +1,5 @@
 import { View, StyleSheet, Image } from "react-native";
-import Logo from "@/assets/images/logo-white.png";
+import Logo from "@/assets/images/logo-primary-4.png";
 
 const TopBar = () => {
     return (
@@ -11,12 +11,11 @@ const TopBar = () => {
 
 const styles = StyleSheet.create({
     container: {
-        height: 50,
-        backgroundColor: "#1F2C50",
+        backgroundColor: "#FFF",
         justifyContent: "center",
         alignItems: "flex-start",
         paddingHorizontal: 20,
-        paddingVertical: 35,
+        paddingVertical: 20,
         borderBottomWidth: 1,
         borderColor: "#DDD",
     },
