@@ -9,9 +9,19 @@ import React, { useState } from "react";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import clsx from "clsx";
 import LucideIcons from "@react-native-vector-icons/lucide";
-import CustomButtonIcon from "@/src/components/CustomButtonIcon";
 
-const difficulties = ["Facile", "Intermédiaire", "Difficile"];
+import CustomButtonIcon from "@/src/components/CustomButtonIcon";
+import { getQuestions } from "@/src/service/ai";
+
+interface Difficulties {
+    [key: string]: string;
+}
+
+const difficulties: Difficulties = {
+    Facile: "facile",
+    Intermédiaire: "intermediaire",
+    Difficile: "difficile",
+};
 
 const DifficultySelection = () => {
     const router = useRouter();
@@ -19,11 +29,14 @@ const DifficultySelection = () => {
     const [isLoading, setIsLoading] = useState(false);
     const { role } = useLocalSearchParams<{ role: string }>();
 
-    const handleContinue = () => {
+    const handleContinue = async () => {
         if (!selected) return;
+        const questions = await getQuestions(role, selected, setIsLoading);
+        const encodedQuestions = encodeURIComponent(JSON.stringify(questions));
+
         router.push({
             pathname: "/interview",
-            params: { role, difficulty: selected },
+            params: { role, difficulty: selected, questions: encodedQuestions },
         });
     };
 
@@ -43,21 +56,21 @@ const DifficultySelection = () => {
                 </View>
 
                 <View>
-                    {difficulties.map((level) => (
+                    {Object.keys(difficulties).map((level) => (
                         <TouchableOpacity
                             key={level}
                             className={clsx(
                                 "mx-0 border rounded-xl px-4 py-4 mb-4",
-                                selected === level
+                                selected === difficulties[level]
                                     ? "border-primary bg-primary/10"
                                     : "border-neutral-200",
                             )}
-                            onPress={() => setSelected(level)}
+                            onPress={() => setSelected(difficulties[level])}
                         >
                             <Text
                                 className={clsx(
                                     "text-lg text-center",
-                                    selected === level
+                                    selected === difficulties[level]
                                         ? "text-primary font-semibold"
                                         : "text-neutral-700",
                                 )}
@@ -78,6 +91,7 @@ const DifficultySelection = () => {
                         )}
                         onPress={handleContinue}
                         disabled={!selected}
+                        isLoading={isLoading}
                         icon={
                             <LucideIcons
                                 name="arrow-right"
