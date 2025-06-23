@@ -9,10 +9,10 @@ from app.db.base import Base
 class Feedback(Base):
     __tablename__ = "feedback"
 
-    id = Column(UUID, primary_key=True, default=uuid4)
-    answer_id = Column(UUID, ForeignKey("answers.id"))
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid4)
+    answer_id = Column(UUID(as_uuid=True), ForeignKey("answers.id", ondelete="CASCADE"))
     category = Column(String)
     score = Column(Float)
     comment = Column(Text)
     source = Column(String, default="AI")
-    created_at = Column(DateTime, default=datetime.utcnow)
+    created_at = Column(DateTime, default=datetime.now)

@@ -21,6 +21,8 @@ ENV/
 staticfiles/
 media/
 db.sqlite3
+database.db
+*.db
 
 # VSCode
 .vscode/
@@ -31,3 +33,5 @@ db.sqlite3
 
 # Environment
 .env
+
+assets/
