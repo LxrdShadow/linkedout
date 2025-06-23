@@ -1,13 +1,21 @@
 import OpenAI from "openai";
-import { GITHUB_PERSONAL_ACCESS_TOKEN } from "../constants";
-import { handleApiError } from "../lib/errors";
 import Toast from "react-native-toast-message";
 import { router } from "expo-router";
+import { ChatCompletion } from "openai/resources/index.mjs";
+
+import { GITHUB_PERSONAL_ACCESS_TOKEN } from "../constants";
+import { handleApiError } from "../lib/errors";
 
 const client = new OpenAI({
     baseURL: "https://models.github.ai/inference",
     apiKey: GITHUB_PERSONAL_ACCESS_TOKEN,
 });
+
+function parseResponse(response: ChatCompletion) {
+    const raw = response.choices[0].message.content;
+    const cleaned = raw?.replace(/```json|```/g, "").trim();
+    return JSON.parse(String(cleaned));
+}
 
 export async function getQuestions(
     role: string,
@@ -29,8 +37,50 @@ export async function getQuestions(
             max_tokens: 4096,
             top_p: 1,
         });
-        const raw = response.choices[0].message.content;
-        const cleaned = raw?.replace(/```json|```/g, "").trim();
+        const cleaned = parseResponse(response);
+
+        return JSON.parse(String(cleaned));
+    } catch (err) {
+        const newErr = handleApiError(err);
+        Toast.show({
+            type: "error",
+            text1: "Erreur",
+            text1Style: { fontSize: 16, fontWeight: "bold" },
+            text2: String(newErr),
+            text2Style: { fontSize: 13 },
+        });
+        router.push("/interviewOptions");
+    } finally {
+        setIsLoading(false);
+    }
+}
+
+export async function getFeedback(
+    role: string,
+    question: string,
+    answer: string,
+    setIsLoading: (value: boolean) => void,
+) {
+    setIsLoading(true);
+    try {
+        const response = await client.chat.completions.create({
+            messages: [
+                {
+                    role: "system",
+                    content: `Tu es un coach en interview et tu a posé cette question à l'utilisateur qui travaille sur un interview en tant que ${role}: "${question}"`,
+                },
+                {
+                    role: "user",
+                    content: `Voici la réponse de l'utilisateur : "${answer}". Évaluez la réponse et renvoyez une réponse JSON structurée comprenant : - un bref « feedback » expliquant si la réponse est bonne ou ce qui lui manque, - un « score » compris entre 0 et 5, - un court champ « advice » avec des pistes d'amélioration (dans la même langue que la réponse), - et un « level » (niveau) qui peut être « faible », « moyen » ou « fort ». Renvoie uniquement du JSON valide, comme : { "feedback": "...", "score": 3, "advice": "...", "level": "moyen" }. N'expliquez pas votre raisonnement en dehors du JSON. Utilisez le langage de la réponse pour le feedback.`,
+                },
+            ],
+            model: "openai/gpt-4o",
+            temperature: 1,
+            max_tokens: 4096,
+            top_p: 1,
+        });
+
+        const cleaned = parseResponse(response);
 
         return JSON.parse(String(cleaned));
     } catch (err) {
