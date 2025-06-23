@@ -1,6 +1,6 @@
 import { router, useLocalSearchParams } from "expo-router";
-import { Text, View, ScrollView } from "react-native";
-import React from "react";
+import { Text, View, Animated } from "react-native";
+import React, { useRef, useEffect } from "react";
 import { AntDesign } from "@expo/vector-icons";
 import CustomButtonIcon from "@/src/components/CustomButtonIcon";
 
@@ -32,6 +32,7 @@ const scoreColors = [
 
 const FeedbackScreen = () => {
     const { feedbacks } = useLocalSearchParams<{ feedbacks: string }>();
+    const fadeAnim = useRef(new Animated.Value(0)).current;
 
     let parsed: FeedbackEntry[] = [];
     try {
@@ -40,23 +41,35 @@ const FeedbackScreen = () => {
         console.error("Failed to parse feedbacks", e);
     }
 
+    useEffect(() => {
+        Animated.timing(fadeAnim, {
+            toValue: 1,
+            duration: 500,
+            useNativeDriver: true,
+        }).start();
+    }, []);
+
     const calculateAverageScore = () => {
-        if (parsed.length === 0) return 0;
-        const total = parsed.reduce(
+        const validEntries = parsed.filter(
+            (entry) =>
+                entry.feedback && typeof entry.feedback.score === "number",
+        );
+        if (validEntries.length === 0) return 0;
+        const total = validEntries.reduce(
             (sum, entry) => sum + entry.feedback.score,
             0,
         );
-        return Number((total / parsed.length).toFixed(1));
+        return Number((total / validEntries.length).toFixed(1));
     };
 
     return (
-        <ScrollView
+        <Animated.ScrollView
+            style={{ opacity: fadeAnim }}
             contentContainerStyle={{ paddingBottom: 40 }}
             className="flex-1 bg-gray-50 px-5 py-6"
         >
             {/* Header */}
             <View className="mb-10 px-4">
-                {/* Main Title with Decorative Elements */}
                 <View className="flex-row justify-center items-center mb-3">
                     <View className="h-px bg-gray-200 flex-1" />
                     <Text className="text-3xl font-extrabold text-gray-900 text-center mx-4">
@@ -65,14 +78,10 @@ const FeedbackScreen = () => {
                     <View className="h-px bg-gray-200 flex-1" />
                 </View>
 
-                {/* Score Card with Progress Ring */}
                 {parsed.length > 0 && (
-                    <View className="bg-white rounded-2xl p-5 shadow-sm border border-gray-100 items-center">
+                    <View className="bg-white rounded-2xl p-5 shadow-md border border-gray-100 items-center">
                         <View className="relative mb-3">
-                            {/* Progress Ring Background */}
                             <View className="w-20 h-20 rounded-full border-8 border-gray-100" />
-
-                            {/* Progress Ring Foreground - adjusts based on score */}
                             <View
                                 className="absolute top-0 left-0 w-20 h-20 rounded-full border-8 border-transparent"
                                 style={{
@@ -85,10 +94,8 @@ const FeedbackScreen = () => {
                                     ],
                                 }}
                             />
-
-                            {/* Score Display */}
                             <View className="absolute inset-0 justify-center items-center">
-                                <Text className="text-2xl font-bold text-gray-900">
+                                <Text className="text-2xl font-bold text-gray-900 text-center">
                                     {calculateAverageScore()}
                                 </Text>
                             </View>
@@ -105,7 +112,6 @@ const FeedbackScreen = () => {
                             </View>
                         </View>
 
-                        {/* Performance Indicator */}
                         <View className="mt-3 flex-row items-center">
                             <View
                                 className={`w-3 h-3 rounded-full ${
@@ -128,14 +134,23 @@ const FeedbackScreen = () => {
                 )}
             </View>
 
-            {/* Feedback Cards */}
             <View className="space-y-5 pb-6">
                 {parsed.map((entry, index) => (
-                    <View
+                    <Animated.View
                         key={index}
-                        className="bg-white rounded-xl p-6 shadow-sm border border-gray-100 my-5"
+                        className="bg-white rounded-xl p-6 shadow-md border border-gray-100 my-5"
+                        style={{
+                            opacity: fadeAnim,
+                            transform: [
+                                {
+                                    translateY: fadeAnim.interpolate({
+                                        inputRange: [0, 1],
+                                        outputRange: [10, 0],
+                                    }),
+                                },
+                            ],
+                        }}
                     >
-                        {/* Question Header */}
                         <View className="flex-row items-center mb-4">
                             <View className="bg-blue-100 w-8 h-8 rounded-full items-center justify-center mr-3">
                                 <Text className="text-blue-800 font-bold">
@@ -147,7 +162,6 @@ const FeedbackScreen = () => {
                             </Text>
                         </View>
 
-                        {/* User Answer */}
                         <View className="mb-5">
                             <Text className="text-sm font-medium text-gray-500 mb-1">
                                 Votre réponse
@@ -159,7 +173,6 @@ const FeedbackScreen = () => {
                             </View>
                         </View>
 
-                        {/* Feedback */}
                         <View className="mb-5">
                             <View className="flex-row items-center mb-2">
                                 <AntDesign
@@ -176,7 +189,6 @@ const FeedbackScreen = () => {
                             </Text>
                         </View>
 
-                        {/* Advice */}
                         <View className="mb-5">
                             <View className="flex-row items-center mb-2">
                                 <AntDesign
@@ -193,7 +205,6 @@ const FeedbackScreen = () => {
                             </Text>
                         </View>
 
-                        {/* Score & Level */}
                         <View className="flex-row justify-between items-center pt-3 border-t border-gray-100">
                             <View className="flex-row items-center">
                                 <Text className="text-sm text-gray-500 mr-2">
@@ -213,16 +224,17 @@ const FeedbackScreen = () => {
                                 </Text>
                             </View>
                         </View>
-                    </View>
+                    </Animated.View>
                 ))}
             </View>
+
             <CustomButtonIcon
                 variant="primary"
                 className="rounded-xl py-4"
                 title="Retourner"
                 onPress={() => router.replace("/(tabs)/interviewOptions")}
             />
-        </ScrollView>
+        </Animated.ScrollView>
     );
 };
 

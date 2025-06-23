@@ -1,5 +1,5 @@
 import { router, useLocalSearchParams } from "expo-router";
-import { Text, View, Animated } from "react-native";
+import { Text, View, ScrollView, Animated } from "react-native";
 import React, { useRef, useEffect } from "react";
 import { AntDesign } from "@expo/vector-icons";
 import CustomButtonIcon from "@/src/components/CustomButtonIcon";
@@ -95,8 +95,6 @@ const mockFeedback = [
 
 const FeedbackScreen = () => {
     const { feedbacks } = useLocalSearchParams<{ feedbacks: string }>();
-    const fadeAnim = useRef(new Animated.Value(0)).current;
-
     const parsed = mockFeedback;
     // let parsed: FeedbackEntry[] = [];
     // try {
@@ -104,6 +102,8 @@ const FeedbackScreen = () => {
     // } catch (e) {
     //     console.error("Failed to parse feedbacks", e);
     // }
+
+    const fadeAnim = useRef(new Animated.Value(0)).current;
 
     useEffect(() => {
         Animated.timing(fadeAnim, {
@@ -114,25 +114,19 @@ const FeedbackScreen = () => {
     }, []);
 
     const calculateAverageScore = () => {
-        const validEntries = parsed.filter(
-            (entry) =>
-                entry.feedback && typeof entry.feedback.score === "number",
-        );
-        if (validEntries.length === 0) return 0;
-        const total = validEntries.reduce(
+        if (parsed.length === 0) return 0;
+        const total = parsed.reduce(
             (sum, entry) => sum + entry.feedback.score,
             0,
         );
-        return Number((total / validEntries.length).toFixed(1));
+        return Number((total / parsed.length).toFixed(1));
     };
 
     return (
-        <Animated.ScrollView
-            style={{ opacity: fadeAnim }}
+        <ScrollView
             contentContainerStyle={{ paddingBottom: 40 }}
             className="flex-1 bg-gray-50 px-5 py-6"
         >
-            {/* Header */}
             <View className="mb-10 px-4">
                 <View className="flex-row justify-center items-center mb-3">
                     <View className="h-px bg-gray-200 flex-1" />
@@ -170,7 +164,7 @@ const FeedbackScreen = () => {
                                 Score moyen sur
                             </Text>
                             <View className="bg-blue-100 px-2 py-1 rounded-full">
-                                <Text className="text-blue-800 font-bold">
+r                               <Text className="text-blue-800 font-bold">
                                     5
                                 </Text>
                             </View>
@@ -199,97 +193,105 @@ const FeedbackScreen = () => {
             </View>
 
             <View className="space-y-5 pb-6">
-                {parsed.map((entry, index) => (
-                    <Animated.View
-                        key={index}
-                        className="bg-white rounded-xl p-6 shadow-md border border-gray-100 my-5"
-                        style={{
-                            opacity: fadeAnim,
-                            transform: [
-                                {
-                                    translateY: fadeAnim.interpolate({
-                                        inputRange: [0, 1],
-                                        outputRange: [10, 0],
-                                    }),
-                                },
-                            ],
-                        }}
-                    >
-                        <View className="flex-row items-center mb-4">
-                            <View className="bg-blue-100 w-8 h-8 rounded-full items-center justify-center mr-3">
-                                <Text className="text-blue-800 font-bold">
-                                    {index + 1}
+                {parsed.map((entry, index) => {
+                    const slideAnim = useRef(
+                        new Animated.Value(index % 2 === 0 ? -100 : 100),
+                    ).current;
+
+                    useEffect(() => {
+                        Animated.timing(slideAnim, {
+                            toValue: 0,
+                            duration: 500,
+                            delay: index * 100,
+                            useNativeDriver: true,
+                        }).start();
+                    }, []);
+
+                    return (
+                        <Animated.View
+                            key={index}
+                            className="bg-white rounded-xl p-6 shadow-md border border-gray-100 my-5"
+                            style={{
+                                transform: [{ translateX: slideAnim }],
+                                opacity: fadeAnim,
+                            }}
+                        >
+                            <View className="flex-row items-center mb-4">
+                                <View className="bg-blue-100 w-8 h-8 rounded-full items-center justify-center mr-3">
+                                    <Text className="text-blue-800 font-bold">
+                                        {index + 1}
+                                    </Text>
+                                </View>
+                                <Text className="text-lg font-bold text-gray-800 flex-1">
+                                    {entry.question}
                                 </Text>
                             </View>
-                            <Text className="text-lg font-bold text-gray-800 flex-1">
-                                {entry.question}
-                            </Text>
-                        </View>
 
-                        <View className="mb-5">
-                            <Text className="text-sm font-medium text-gray-500 mb-1">
-                                Votre réponse
-                            </Text>
-                            <View className="bg-blue-50 rounded-lg p-3 border border-blue-100">
-                                <Text className="text-base text-gray-800">
-                                    {entry.answer}
+                            <View className="mb-5">
+                                <Text className="text-sm font-medium text-gray-500 mb-1">
+                                    Votre réponse
+                                </Text>
+                                <View className="bg-blue-50 rounded-lg p-3 border border-blue-100">
+                                    <Text className="text-base text-gray-800">
+                                        {entry.answer}
+                                    </Text>
+                                </View>
+                            </View>
+
+                            <View className="mb-5">
+                                <View className="flex-row items-center mb-2">
+                                    <AntDesign
+                                        name="message1"
+                                        size={16}
+                                        color="#6b7280"
+                                    />
+                                    <Text className="text-sm font-medium text-gray-500 ml-2">
+                                        Retour
+                                    </Text>
+                                </View>
+                                <Text className="text-base text-gray-700 pl-6">
+                                    {entry.feedback.feedback}
                                 </Text>
                             </View>
-                        </View>
 
-                        <View className="mb-5">
-                            <View className="flex-row items-center mb-2">
-                                <AntDesign
-                                    name="message1"
-                                    size={16}
-                                    color="#6b7280"
-                                />
-                                <Text className="text-sm font-medium text-gray-500 ml-2">
-                                    Retour
+                            <View className="mb-5">
+                                <View className="flex-row items-center mb-2">
+                                    <AntDesign
+                                        name="bulb1"
+                                        size={16}
+                                        color="#6b7280"
+                                    />
+                                    <Text className="text-sm font-medium text-gray-500 ml-2">
+                                        Conseil
+                                    </Text>
+                                </View>
+                                <Text className="text-base text-gray-700 pl-6">
+                                    {entry.feedback.advice}
                                 </Text>
                             </View>
-                            <Text className="text-base text-gray-700 pl-6">
-                                {entry.feedback.feedback}
-                            </Text>
-                        </View>
 
-                        <View className="mb-5">
-                            <View className="flex-row items-center mb-2">
-                                <AntDesign
-                                    name="bulb1"
-                                    size={16}
-                                    color="#6b7280"
-                                />
-                                <Text className="text-sm font-medium text-gray-500 ml-2">
-                                    Conseil
-                                </Text>
-                            </View>
-                            <Text className="text-base text-gray-700 pl-6">
-                                {entry.feedback.advice}
-                            </Text>
-                        </View>
-
-                        <View className="flex-row justify-between items-center pt-3 border-t border-gray-100">
-                            <View className="flex-row items-center">
-                                <Text className="text-sm text-gray-500 mr-2">
-                                    Score:
-                                </Text>
-                                <Text
-                                    className={`text-lg font-bold ${scoreColors[entry.feedback.score - 1]}`}
+                            <View className="flex-row justify-between items-center pt-3 border-t border-gray-100">
+                                <View className="flex-row items-center">
+                                    <Text className="text-sm text-gray-500 mr-2">
+                                        Score:
+                                    </Text>
+                                    <Text
+                                        className={`text-lg font-bold ${scoreColors[entry.feedback.score - 1]}`}
+                                    >
+                                        {entry.feedback.score}/5
+                                    </Text>
+                                </View>
+                                <View
+                                    className={`px-3 py-1 rounded-full ${levelColors[entry.feedback.level?.toLowerCase()] || "bg-gray-100 text-gray-800"}`}
                                 >
-                                    {entry.feedback.score}/5
-                                </Text>
+                                    <Text className="text-sm font-semibold">
+                                        {entry.feedback.level}
+                                    </Text>
+                                </View>
                             </View>
-                            <View
-                                className={`px-3 py-1 rounded-full ${levelColors[entry.feedback.level?.toLowerCase()] || "bg-gray-100 text-gray-800"}`}
-                            >
-                                <Text className="text-sm font-semibold">
-                                    {entry.feedback.level}
-                                </Text>
-                            </View>
-                        </View>
-                    </Animated.View>
-                ))}
+                        </Animated.View>
+                    );
+                })}
             </View>
 
             <CustomButtonIcon
@@ -298,7 +300,7 @@ const FeedbackScreen = () => {
                 title="Retourner"
                 onPress={() => router.replace("/(tabs)/interviewOptions")}
             />
-        </Animated.ScrollView>
+        </ScrollView>
     );
 };
 

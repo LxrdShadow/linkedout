@@ -40,7 +40,6 @@ const Interview = () => {
     const router = useRouter();
 
     const parsedQuestions = (() => {
-        console.log(questions)
         try {
             return JSON.parse(questions) as { text: string }[];
         } catch (e) {
