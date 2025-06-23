@@ -58,7 +58,7 @@ const RootLayout = () => {
                 }}
             />
             <Tabs.Screen
-                name="interview"
+                name="roleSelection"
                 options={{
                     title: "Interview",
                     headerShown: false,
