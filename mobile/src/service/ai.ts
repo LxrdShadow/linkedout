@@ -39,7 +39,7 @@ export async function getQuestions(
         });
         const cleaned = parseResponse(response);
 
-        return JSON.parse(String(cleaned));
+        return cleaned;
     } catch (err) {
         const newErr = handleApiError(err);
         Toast.show({
@@ -81,8 +81,11 @@ export async function getFeedback(
         });
 
         const cleaned = parseResponse(response);
+        console.log("Question:", question);
+        console.log("Answer:", answer);
+        console.log("Feedback:", cleaned);
 
-        return JSON.parse(String(cleaned));
+        return cleaned;
     } catch (err) {
         const newErr = handleApiError(err);
         Toast.show({

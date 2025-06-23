@@ -81,7 +81,7 @@ const Index = () => {
                     duration={600}
                 >
                     <CustomButtonIcon
-                        onPress={() => router.push("/interviewOptions")}
+                        onPress={() => router.push("/interview/feedback")}
                         className="bg-primary py-4 px-8 rounded-full items-center justify-center flex-row gap-2 my-10"
                         textClassName="text-lg font-semibold"
                         title="Commencer une simulation"

@@ -3,14 +3,15 @@ import {
     Text,
     View,
     TextInput,
-    TouchableOpacity,
     ScrollView,
     KeyboardAvoidingView,
     Platform,
-    Alert,
 } from "react-native";
 import React, { useState } from "react";
 import clsx from "clsx";
+import Toast from "react-native-toast-message";
+import { getFeedback } from "@/src/service/ai";
+import CustomButton from "@/src/components/CustomButton";
 
 const cardShadow = {
     shadowColor: "#000",
@@ -39,41 +40,92 @@ const Interview = () => {
     const router = useRouter();
 
     const parsedQuestions = (() => {
+        console.log(questions)
         try {
             return JSON.parse(questions) as { text: string }[];
         } catch (e) {
             console.error("Failed to parse questions", e);
+            Toast.show({
+                type: "error",
+                text1: "Erreur",
+                text1Style: { fontSize: 16, fontWeight: "bold" },
+                text2: "Erreur lors de la création de l'interview",
+                text2Style: { fontSize: 13 },
+            });
+            router.replace("/interviewOptions");
             return [];
         }
     })();
 
     const [currentIndex, setCurrentIndex] = useState(0);
-    const [answers, setAnswers] = useState<string[]>(
-        Array(parsedQuestions.length).fill(""),
+    const [answers, setAnswers] = useState<
+        { question: string; answer: string; feedback: string | null }[]
+    >(
+        parsedQuestions.map((q) => ({
+            question: q.text,
+            answer: "",
+            feedback: null,
+        })),
     );
+    const [loading, setLoading] = useState(false);
 
     const handleChangeAnswer = (text: string) => {
         const updated = [...answers];
-        updated[currentIndex] = text;
-        setAnswers(updated);
+        if (updated[currentIndex]) {
+            updated[currentIndex].answer = text;
+            setAnswers(updated);
+        }
     };
 
-    const handleNext = () => {
-        if (!answers[currentIndex].trim()) {
-            Alert.alert("Réponse requise", "Veuillez saisir une réponse.");
+    const handleNext = async () => {
+        const current = answers[currentIndex];
+
+        if (!current || !current.answer.trim()) {
+            Toast.show({
+                type: "error",
+                text1: "Erreur",
+                text1Style: { fontSize: 16, fontWeight: "bold" },
+                text2: "Veuillez saisir une réponse.",
+                text2Style: { fontSize: 13 },
+            });
             return;
         }
 
-        if (currentIndex < parsedQuestions.length - 1) {
-            setCurrentIndex(currentIndex + 1);
-        } else {
-            // Final submission placeholder
-            console.log("Answers submitted:", answers);
-            router.push("/(tabs)/dashboard");
+        try {
+            const feedback = await getFeedback(
+                role,
+                current.question,
+                current.answer,
+                setLoading,
+            );
+            const updated = [...answers];
+            updated[currentIndex] = { ...current, feedback };
+            setAnswers(updated);
+
+            if (currentIndex < answers.length - 1) {
+                setCurrentIndex(currentIndex + 1);
+            } else {
+                const encoded = encodeURIComponent(JSON.stringify(updated));
+                router.replace({
+                    pathname: "/interview/feedback",
+                    params: { feedbacks: encoded },
+                });
+            }
+        } catch (e) {
+            console.error("Feedback error:", e);
+            Toast.show({
+                type: "error",
+                text1: "Erreur",
+                text1Style: { fontSize: 16, fontWeight: "bold" },
+                text2: "Impossible de générer le retour",
+                text2Style: { fontSize: 13 },
+            });
+        } finally {
+            setLoading(false);
         }
     };
 
-    const isLast = currentIndex === parsedQuestions.length - 1;
+    const isLast = currentIndex === answers.length - 1;
 
     return (
         <KeyboardAvoidingView
@@ -90,7 +142,6 @@ const Interview = () => {
                 }}
                 keyboardShouldPersistTaps="handled"
             >
-                {/* Header */}
                 <View className="mb-8 items-center">
                     <Text className="text-4xl font-extrabold text-primary tracking-tight mb-2">
                         Simulation d&apos;entretien
@@ -104,38 +155,31 @@ const Interview = () => {
                     </Text>
                 </View>
 
-                {/* Stepper */}
                 <View className="mb-6 w-full">
                     <Text className="text-sm text-neutral-500 font-medium mb-2">
-                        Question {currentIndex + 1} of {parsedQuestions.length}
+                        Question {currentIndex + 1} of {answers.length}
                     </Text>
                     <View className="w-full h-4 bg-primary-70 rounded-full overflow-hidden">
                         <View
                             style={{
-                                width: `${
-                                    ((currentIndex + 1) /
-                                        parsedQuestions.length) *
-                                    100
-                                }%`,
+                                width: `${((currentIndex + 1) / answers.length) * 100}%`,
                             }}
                             className="h-full bg-primary rounded-full"
                         />
                     </View>
                 </View>
 
-                {/* Question Card */}
                 <View
                     className="bg-neutral-50 border border-neutral-200 rounded-2xl p-6 mb-6"
                     style={cardShadow}
                 >
                     <Text className="text-lg text-neutral-800 font-semibold leading-relaxed">
-                        {parsedQuestions[currentIndex]?.text}
+                        {answers[currentIndex]?.question}
                     </Text>
                 </View>
 
-                {/* Answer Input */}
                 <TextInput
-                    value={answers[currentIndex]}
+                    value={answers[currentIndex]?.answer}
                     onChangeText={handleChangeAnswer}
                     placeholder="Tapez votre réponse ici..."
                     multiline
@@ -144,20 +188,17 @@ const Interview = () => {
                     style={cardShadow}
                 />
 
-                {/* Action Button */}
-                <TouchableOpacity
+                <CustomButton
+                    title={isLast ? "Soumettre mes réponses" : "Suivant"}
                     onPress={handleNext}
-                    disabled={!answers[currentIndex].trim()}
+                    disabled={!answers[currentIndex]?.answer.trim() || loading}
+                    isLoading={loading}
                     className={clsx(
                         "mt-8 py-4 px-6 rounded-full bg-primary",
                         "items-center transition-opacity duration-200",
-                        !answers[currentIndex].trim() && "opacity-50",
+                        !answers[currentIndex]?.answer.trim() && "opacity-50",
                     )}
-                >
-                    <Text className="text-white font-semibold text-lg">
-                        {isLast ? "Soumettre mes réponses" : "Suivant"}
-                    </Text>
-                </TouchableOpacity>
+                />
             </ScrollView>
         </KeyboardAvoidingView>
     );
