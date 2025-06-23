@@ -6,7 +6,7 @@ import {
     Platform,
 } from "react-native";
 import React, { useState } from "react";
-import { useRouter } from "expo-router";
+import { useLocalSearchParams, useRouter } from "expo-router";
 import clsx from "clsx";
 import LucideIcons from "@react-native-vector-icons/lucide";
 import CustomButtonIcon from "@/src/components/CustomButtonIcon";
@@ -16,19 +16,21 @@ const difficulties = ["Facile", "Intermédiaire", "Difficile"];
 const DifficultySelection = () => {
     const router = useRouter();
     const [selected, setSelected] = useState<string | null>(null);
+    const [isLoading, setIsLoading] = useState(false);
+    const { role } = useLocalSearchParams<{ role: string }>();
 
     const handleContinue = () => {
         if (!selected) return;
         router.push({
             pathname: "/interview",
-            params: { difficulty: selected },
+            params: { role, difficulty: selected },
         });
     };
 
     return (
         <KeyboardAvoidingView
             behavior={Platform.OS === "ios" ? "padding" : undefined}
-            style={{ flex: 1, backgroundColor: "white" }}
+            style={{ flex: 1, backgroundColor: "white", paddingBottom: 40 }}
         >
             <View className="px-6 pt-10 flex-1">
                 <View className="items-center mb-8">

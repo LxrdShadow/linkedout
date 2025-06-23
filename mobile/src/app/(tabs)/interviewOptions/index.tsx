@@ -52,7 +52,7 @@ const RoleSelection = () => {
     const handleContinue = () => {
         if (!selected) return;
         router.push({
-            pathname: "/interview/difficultySelection",
+            pathname: "/interviewOptions/difficultySelection",
             params: { role: selected },
         });
     };
