@@ -1,14 +1,22 @@
 import CustomButton from "@/src/components/CustomButton";
 import CustomTextInput from "@/src/components/CustomTextInput";
-import { useRouter } from "expo-router";
+import { useAuth } from "@/src/context/AuthContext";
+import { useLocalSearchParams, useRouter } from "expo-router";
+import { useState } from "react";
 import { View, Text } from "react-native";
 
 const VerifyOTP = () => {
     const router = useRouter();
+    const [otp, setOtp] = useState("");
+    const { email } = useLocalSearchParams<{ email: string }>();
+    const { verifyOTP, isLoading } = useAuth();
 
-    const handleVerifyOTP = () => {
-        router.dismissAll();
-        router.replace("/setUsername");
+    const handleVerifyOTP = async () => {
+        const success = await verifyOTP(email, otp);
+        if (success) {
+            router.dismissAll();
+            router.replace("/setUsername");
+        }
     };
 
     return (
@@ -32,12 +40,15 @@ const VerifyOTP = () => {
                         placeholder="OTP"
                         keyboardType="numeric"
                         autoCapitalize="none"
+                        onChangeText={setOtp}
+                        value={otp}
                     />
                     <CustomButton
                         title="Confirmer"
                         onPress={handleVerifyOTP}
                         textClassName="font-bold text-xl"
                         variant="primary"
+                        isLoading={isLoading}
                     />
                 </View>
             </View>

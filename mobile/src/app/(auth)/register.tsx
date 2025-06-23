@@ -1,13 +1,21 @@
-import CustomButton from "@/src/components/CustomButton";
-import CustomTextInput from "@/src/components/CustomTextInput";
 import { useRouter } from "expo-router";
+import { useState } from "react";
 import { Text, TouchableOpacity, View } from "react-native";
 
+import CustomButton from "@/src/components/CustomButton";
+import CustomTextInput from "@/src/components/CustomTextInput";
+import { useAuth } from "@/src/context/AuthContext";
+
 const Register = () => {
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
+    const [confirmPassword, setConfirmPassword] = useState("");
+    const { register, isLoading } = useAuth();
     const router = useRouter();
 
-    const handleSignup = () => {
-        router.push("/verifyOTP");
+    const handleSignup = async () => {
+        const success = await register(email, password, confirmPassword);
+        if (success) router.push({ pathname: "/verifyOTP", params: { email } });
     };
 
     return (
@@ -24,18 +32,24 @@ const Register = () => {
                         placeholder="Email"
                         keyboardType="email-address"
                         autoCapitalize="none"
+                        onChangeText={setEmail}
+                        value={email}
                     />
                     <CustomTextInput
                         label="Mot de passe"
                         inputClassName="bg-primary-0 rounded-xl p-3 mb-1 text-lg"
                         placeholder="Mot de passe"
                         secureTextEntry
+                        onChangeText={setPassword}
+                        value={password}
                     />
                     <CustomTextInput
                         label="Confirmer le mot de passe"
                         inputClassName="bg-primary-0 rounded-xl p-3 mb-1 text-lg"
                         placeholder="Mot de passe de confirmation"
                         secureTextEntry
+                        onChangeText={setConfirmPassword}
+                        value={confirmPassword}
                     />
                 </View>
 
@@ -45,6 +59,7 @@ const Register = () => {
                         onPress={handleSignup}
                         textClassName="font-bold text-xl"
                         variant="ghost"
+                        isLoading={isLoading}
                     />
 
                     <View className="flex-row justify-center mt-4">

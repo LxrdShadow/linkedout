@@ -1,13 +1,18 @@
 import CustomButton from "@/src/components/CustomButton";
 import CustomTextInput from "@/src/components/CustomTextInput";
+import { useAuth } from "@/src/context/AuthContext";
 import { useRouter } from "expo-router";
+import { useState } from "react";
 import { View, Text } from "react-native";
 
 const SetUsername = () => {
+    const [username, setUsername] = useState("");
     const router = useRouter();
+    const { putUsername, isLoading } = useAuth();
 
-    const handleSetUsername = () => {
-        router.replace("/dashboard");
+    const handleSetUsername = async () => {
+        const success = await putUsername(username);
+        if (success) router.replace("/(tabs)");
     };
 
     return (
@@ -22,12 +27,15 @@ const SetUsername = () => {
                         inputClassName="bg-primary-0 rounded-xl p-3 text-lg"
                         placeholder="Nom d'utilisateur"
                         autoCapitalize="none"
+                        onChangeText={setUsername}
+                        value={username}
                     />
                     <CustomButton
                         title="Confirmer"
                         onPress={handleSetUsername}
                         textClassName="font-bold text-xl"
                         variant="primary"
+                        isLoading={isLoading}
                     />
                 </View>
             </View>

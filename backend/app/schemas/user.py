@@ -15,8 +15,13 @@ class UserCreate(UserBase):
 
 class UserOut(UserBase):
     id: UUID
-    username: str = None
+    username: str | None = None
+    is_verified: bool
     created_at: datetime
 
     class Config:
         from_attributes: True
+
+
+class UsernameSet(BaseModel):
+    username: str
