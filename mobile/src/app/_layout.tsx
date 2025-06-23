@@ -10,7 +10,7 @@ export default function RootLayout() {
     if (Platform.OS !== "web") Appearance.setColorScheme("light");
     const segments = useSegments(); // ['(tabs)', 'dashboard'] for example
 
-    const isTabs = segments[0] === "(tabs)";
+    const isTabs = segments[0] !== "(auth)";
 
     return (
         <SafeAreaProvider>
