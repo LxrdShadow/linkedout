@@ -6,7 +6,7 @@ import { ChatCompletion } from "openai/resources/index.mjs";
 import { GITHUB_PERSONAL_ACCESS_TOKEN } from "../constants";
 
 const endpoint = "https://models.github.ai/inference";
-const model = "xai/grok-3";
+const model = "openai/gpt-4.1";
 const client = new OpenAI({
     baseURL: endpoint,
     apiKey: GITHUB_PERSONAL_ACCESS_TOKEN,

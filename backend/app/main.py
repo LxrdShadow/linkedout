@@ -3,7 +3,7 @@ from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
 from starlette.status import HTTP_422_UNPROCESSABLE_ENTITY
 
-from app.api.routes import auth, interview, question, user
+from app.api.routes import auth, interview, question, user, audio
 from app.core.errors import translate_error_message
 from app.db.base import Base
 from app.db.session import engine
@@ -42,6 +42,7 @@ app.include_router(auth.router)
 app.include_router(user.router)
 app.include_router(interview.router)
 app.include_router(question.router)
+app.include_router(audio.router)
 
 
 @app.get("/")

@@ -58,7 +58,7 @@ const Register = () => {
                         title="Continuer"
                         onPress={handleSignup}
                         textClassName="font-bold text-xl"
-                        variant="ghost"
+                        variant="primary"
                         isLoading={isLoading}
                     />
 
