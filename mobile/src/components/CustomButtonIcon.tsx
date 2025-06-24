@@ -43,6 +43,7 @@ export default function CustomButtonIcon({
             onPress={onPress}
             disabled={disabled}
             className={cn(
+                "flex-row",
                 baseStyles,
                 variants[variant],
                 disabled && "opacity-50",

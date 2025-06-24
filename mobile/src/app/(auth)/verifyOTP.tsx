@@ -14,7 +14,6 @@ const VerifyOTP = () => {
     const handleVerifyOTP = async () => {
         const success = await verifyOTP(email, otp);
         if (success) {
-            router.dismissAll();
             router.replace("/setUsername");
         }
     };
@@ -32,7 +31,7 @@ const VerifyOTP = () => {
                             Entrez le code envoyé à l&apos;adresse email{" "}
                         </Text>
                         <Text className="text-primary underline text-center">
-                            test@example.com
+                            {email}
                         </Text>
                     </View>
                     <CustomTextInput
