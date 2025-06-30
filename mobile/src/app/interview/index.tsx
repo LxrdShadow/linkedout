@@ -33,20 +33,6 @@ const difficulties: Difficulties = {
     difficile: "Difficile",
 };
 
-const mockQuestions = [
-    {
-        text: "Pouvez-vous expliquer la différence entre HTML, CSS et JavaScript ?",
-    },
-    { text: "Comment assurer la compatibilité entre différents navigateurs ?" },
-    { text: "Qu'est-ce qu'une API REST et comment fonctionne-t-elle ?" },
-    {
-        text: "Quels sont vos outils ou techniques préférés pour optimiser les performances d'un site web ?",
-    },
-    {
-        text: "Avez-vous déjà utilisé un framework JavaScript ? Lequel et pourquoi ?",
-    },
-];
-
 const Interview = () => {
     const { role, difficulty, questions } = useLocalSearchParams<{
         role: string;
