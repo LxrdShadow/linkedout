@@ -21,6 +21,6 @@ async def answer_question(
 ):
     question = question_crud.get_question(db, question_id)
     if not question:
-        raise HTTPException(404, "La question n'a pas été trouvé.")
+        raise HTTPException(404, "Question not found.")
 
     return answer_crud.create_answer(db, answer, question)
