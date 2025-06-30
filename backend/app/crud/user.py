@@ -17,7 +17,7 @@ def _hash_password(password: str) -> str:
 def create_user(db: Session, user_in: UserCreate):
     existing = get_user_by_email(db, user_in.email)
     if existing:
-        raise HTTPException(400, "Email déjà utilisé.")
+        raise HTTPException(400, "Email already in use.")
 
     user = User(
         id=str(uuid4()),
@@ -41,7 +41,7 @@ def get_user_by_username(db: Session, username: str):
 def get_user(db: Session, user_id: str):
     user = db.query(User).where(User.id == user_id).first()
     if not user:
-        raise HTTPException(404, "L'utilisateur n'a pas été trouvé.")
+        raise HTTPException(404, "User not found.")
 
     return user
 
