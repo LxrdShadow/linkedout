@@ -28,7 +28,7 @@ conf = ConnectionConfig(
 
 async def send_otp_email(email_to: str, otp_code: str):
     message = MessageSchema(
-        subject="🔐 Votre code de vérification",
+        subject="🔐 Your verification code",
         recipients=[email_to],
         template_body={"code": otp_code},
         subtype="html",
