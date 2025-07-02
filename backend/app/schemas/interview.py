@@ -9,9 +9,9 @@ from app.schemas.question import QuestionOut
 
 
 class Difficulty(str, Enum):
-    EASY = "facile"
-    MEDIUM = "intermediaire"
-    HARD = "difficile"
+    EASY = "easy"
+    MEDIUM = "medium"
+    HARD = "hard"
 
 
 class InterviewBase(BaseModel):

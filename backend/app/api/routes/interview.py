@@ -30,7 +30,7 @@ async def create_interview(
     db: Session = Depends(get_db),
 ):
     if interview.difficulty not in Difficulty:
-        raise HTTPException(400, "Niveau de difficulté invalide.")
+        raise HTTPException(400, "Invalid difficulty.")
 
     interview = interview_crud.create_interview(db, interview, auth_user)
     questions: list[QuestionOut] = []
@@ -55,6 +55,6 @@ async def create_interview(
 async def read_interview_questions(interview_id: str, db: Session = Depends(get_db)):
     interview = interview_crud.get_interview(db, interview_id)
     if not interview:
-        raise HTTPException(404, "L'interview n'a pas été trouvé.")
+        raise HTTPException(404, "Interview not found.")
 
     return question_crud.get_interview_questions(db, interview)

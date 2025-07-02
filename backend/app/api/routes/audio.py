@@ -9,12 +9,12 @@ router = APIRouter(prefix="/audio", tags=["audio"])
 @router.post("/transcript", status_code=status.HTTP_200_OK)
 async def get_transcript(file: UploadFile = File(...)):
     if not file.content_type.startswith("audio/"):
-        return JSONResponse(status_code=400, content={"error": "Invalid file type"})
+        return JSONResponse(status_code=400, content={"error": "Invalid file type."})
 
     audio_bytes = await file.read()
     transcript = await transcript_audio(audio_bytes)
 
     if transcript.status == "error":
-        raise HTTPException(500, "Erreur lors de la transcription.")
+        raise HTTPException(500, "Transcription error.")
 
     return {"transcript": transcript.text}

@@ -28,9 +28,9 @@ interface Difficulties {
 }
 
 const difficulties: Difficulties = {
-    facile: "Facile",
-    intermediaire: "Intermédiaire",
-    difficile: "Difficile",
+    easy: "Easy",
+    medium: "Medium",
+    hard: "Hard",
 };
 
 const Interview = () => {
@@ -49,9 +49,9 @@ const Interview = () => {
             console.error("Failed to parse questions", e);
             Toast.show({
                 type: "error",
-                text1: "Erreur",
+                text1: "Error",
                 text1Style: { fontSize: 16, fontWeight: "bold" },
-                text2: "Erreur lors de la création de l'interview",
+                text2: "Failed to create the interview.",
                 text2Style: { fontSize: 13 },
             });
             router.replace("/interviewOptions");
@@ -92,8 +92,8 @@ const Interview = () => {
         if (!audioRecorder.uri) {
             Toast.show({
                 type: "error",
-                text1: "Erreur",
-                text2: "Aucun enregistrement disponible",
+                text1: "Error",
+                text2: "No available record.",
             });
             return;
         }
@@ -145,8 +145,8 @@ const Interview = () => {
             console.error("Transcription error", error);
             Toast.show({
                 type: "error",
-                text1: "Erreur",
-                text2: "Échec de la transcription audio",
+                text1: "Error",
+                text2: "Failed to transcript the audio.",
             });
         } finally {
             setRecordLoading(false);
@@ -167,9 +167,9 @@ const Interview = () => {
         if (!current || !current.answer.trim()) {
             Toast.show({
                 type: "error",
-                text1: "Erreur",
+                text1: "Error",
                 text1Style: { fontSize: 16, fontWeight: "bold" },
-                text2: "Veuillez saisir une réponse.",
+                text2: "Please enter an answer.",
                 text2Style: { fontSize: 13 },
             });
             return;
@@ -199,9 +199,9 @@ const Interview = () => {
             console.error("Feedback error:", e);
             Toast.show({
                 type: "error",
-                text1: "Erreur",
+                text1: "Error",
                 text1Style: { fontSize: 16, fontWeight: "bold" },
-                text2: "Impossible de générer le retour",
+                text2: "Failed to generate feedback.",
                 text2Style: { fontSize: 13 },
             });
         } finally {
@@ -241,9 +241,9 @@ const Interview = () => {
             if (!status.granted) {
                 Toast.show({
                     type: "error",
-                    text1: "Erreur",
+                    text1: "Error",
                     text1Style: { fontSize: 16, fontWeight: "bold" },
-                    text2: "Permsssion à acceder au microphone a été dénié",
+                    text2: "Microphone permission denied.",
                     text2Style: { fontSize: 13 },
                 });
             }

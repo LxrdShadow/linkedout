@@ -1,7 +1,7 @@
 export function handleApiError(err: any): string | null {
     const detail = err?.response?.data?.detail;
 
-    if (!detail) return "Erreur inconnue. Veuillez réessayer.";
+    if (!detail) return "Unknown error. Please retry.";
 
     if (typeof detail === "string") {
         if (detail.startsWith("[hide]")) return null;
@@ -16,5 +16,5 @@ export function handleApiError(err: any): string | null {
         return detail[0].msg;
     }
 
-    return "Une erreur est survenue.";
+    return "An error occured.";
 }
