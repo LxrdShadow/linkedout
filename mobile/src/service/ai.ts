@@ -6,7 +6,7 @@ import { ChatCompletion } from "openai/resources/index.mjs";
 import { GITHUB_PERSONAL_ACCESS_TOKEN } from "../constants";
 
 const endpoint = "https://models.github.ai/inference";
-const model = "xai/grok-3";
+const model = "openai/gpt-4.1";
 const client = new OpenAI({
     baseURL: endpoint,
     apiKey: GITHUB_PERSONAL_ACCESS_TOKEN,
@@ -27,10 +27,10 @@ export async function getQuestions(
     try {
         const response = await client.chat.completions.create({
             messages: [
-                { role: "system", content: "Tu es un coach en interview." },
+                { role: "system", content: "You are an interview coach." },
                 {
                     role: "user",
-                    content: `Vous êtes une IA qui génère des questions d'entretien au format JSON. Veuillez générer 5 questions d'entretien courtes et claires pour un entretien ${difficulty} pour un poste ${role}. Toutes les questions doivent être rédigées en français. ### Format de sortie : Renvoyer le résultat sous forme de tableau JSON valide avec la structure suivante : [ { "text": "Première question ?" }, { "text": "Deuxième question ?" }, ... ] N'incluez pas d'explications ni de commentaires. Affichez uniquement le JSON.`,
+                    content: `You are an AI that generates interview questions in JSON format. Please generate 5 short and clear interview questions for a ${difficulty} interview for a ${role} position. All questions must be written in English. ### Output format: Return the result as a valid JSON array with the following structure: [ { "text": "First question?" }, { "text": "Second question?" }, ... ] Do not include explanations or comments. Display only the JSON.`,
                 },
             ],
             model: model,
@@ -45,9 +45,9 @@ export async function getQuestions(
         console.log(err);
         Toast.show({
             type: "error",
-            text1: "Erreur",
+            text1: "Error",
             text1Style: { fontSize: 16, fontWeight: "bold" },
-            text2: "Erreur lors de la génération des questions.",
+            text2: "Failed to generate questions.",
             text2Style: { fontSize: 13 },
         });
         router.push("/interviewOptions");
@@ -68,11 +68,11 @@ export async function getFeedback(
             messages: [
                 {
                     role: "system",
-                    content: `Tu es un coach en interview et tu a posé cette question à l'utilisateur qui travaille sur un interview en tant que ${role}: "${question}"`,
+                    content: `You are an interview coach and you asked this question to the user who is working on an interview as ${role}: "${question}"`,
                 },
                 {
                     role: "user",
-                    content: `Voici la réponse de l'utilisateur : "${answer}". Évaluez la réponse et renvoyez une réponse JSON structurée comprenant : - un bref « feedback » expliquant si la réponse est bonne ou ce qui lui manque, - un « score » compris entre 0 et 5, - un court champ « advice » avec des pistes d'amélioration (dans la même langue que la réponse), - et un « level » (niveau) qui peut être « faible », « moyen » ou « fort ». Renvoie uniquement du JSON valide, comme : { "feedback": "...", "score": 3, "advice": "...", "level": "moyen" }. N'expliquez pas votre raisonnement en dehors du JSON. Utilisez le langage de la réponse pour le feedback.`,
+                    content: `Here is the user's answer: "${answer}". Evaluate the answer and return a structured JSON response including: - a short "feedback" explaining whether the answer is correct or what is missing, - a "score" between 0 and 5, - a short "advice" field with suggestions for improvement (in the same language as the answer), - and a "level" which can be "weak", "medium", or "strong". Return only valid JSON, such as: { "feedback": "...", "score": 3, "advice": "...", "level": "medium" }. Do not explain your reasoning outside of the JSON. Use the language in the answer for feedback.`,
                 },
             ],
             model: model,
@@ -87,9 +87,9 @@ export async function getFeedback(
         console.log(err);
         Toast.show({
             type: "error",
-            text1: "Erreur",
+            text1: "Error",
             text1Style: { fontSize: 16, fontWeight: "bold" },
-            text2: "Erreur lors de la génération des retours IA.",
+            text2: "Failed to generate IA feedback.",
             text2Style: { fontSize: 13 },
         });
         router.push("/interviewOptions");

@@ -58,10 +58,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
             const { data } = await api.get("/auth/me");
             setUser(data);
         } catch (err) {
-            console.warn(
-                "Erreur lors de la vérification de l'utilisateur",
-                err,
-            );
+            console.warn("Failed to verify user.", err);
             setUser(null);
         } finally {
             setIsLoading(false);
@@ -99,7 +96,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
             console.log(err);
             Toast.show({
                 type: "error",
-                text1: "Erreur",
+                text1: "Error",
                 text1Style: { fontSize: 16, fontWeight: "bold" },
                 text2: String(newErr),
                 text2Style: { fontSize: 13 },
@@ -120,7 +117,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
             const newErr = handleApiError(err);
             Toast.show({
                 type: "error",
-                text1: "Erreur",
+                text1: "Error",
                 text1Style: { fontSize: 16, fontWeight: "bold" },
                 text2: String(newErr),
                 text2Style: { fontSize: 13 },
@@ -149,7 +146,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
             const newErr = handleApiError(err);
             Toast.show({
                 type: "error",
-                text1: "Erreur",
+                text1: "Error",
                 text1Style: { fontSize: 16, fontWeight: "bold" },
                 text2: String(newErr),
                 text2Style: { fontSize: 13 },
@@ -175,7 +172,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
             const newErr = handleApiError(err);
             Toast.show({
                 type: "error",
-                text1: "Erreur",
+                text1: "Error",
                 text1Style: { fontSize: 16, fontWeight: "bold" },
                 text2: String(newErr),
                 text2Style: { fontSize: 13 },
@@ -201,7 +198,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
             const newErr = handleApiError(err);
             Toast.show({
                 type: "error",
-                text1: "Erreur",
+                text1: "Error",
                 text1Style: { fontSize: 16, fontWeight: "bold" },
                 text2: String(newErr),
                 text2Style: { fontSize: 13 },
@@ -218,7 +215,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
             await clearTokens();
             setUser(null);
         } catch (err) {
-            console.warn("Erreur lors de la déconnexion", err);
+            console.warn("Failed to log out.", err);
         } finally {
             setIsLoading(false);
         }

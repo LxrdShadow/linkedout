@@ -34,7 +34,13 @@
                     "backgroundColor": "#ffffff"
                 }
             ],
-            "expo-web-browser"
+            "expo-web-browser",
+            [
+                "expo-audio",
+                {
+                    "microphonePermission": "Allow LinkedOut to access your microphone."
+                }
+            ]
         ],
         "experiments": {
             "typedRoutes": true

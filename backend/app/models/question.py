@@ -10,7 +10,9 @@ class Question(Base):
     __tablename__ = "questions"
 
     id = Column(UUID(as_uuid=True), primary_key=True, default=uuid4)
-    interview_id = Column(UUID(as_uuid=True), ForeignKey("interviews.id", ondelete="CASCADE"))
+    interview_id = Column(
+        UUID(as_uuid=True), ForeignKey("interviews.id", ondelete="CASCADE")
+    )
     index = Column(Integer)
     text = Column(Text)
 
