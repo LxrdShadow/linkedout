@@ -26,11 +26,11 @@ const Index = () => {
                         style={{ width: 70, height: 70, marginBottom: 10 }}
                     />
                     <Text className="text-4xl font-extrabold text-primary text-center">
-                        Bienvenue sur LinkedOut
+                        Welcome to LinkedOut
                     </Text>
                     <Text className="mt-4 text-center text-neutral-500 text-lg px-2">
-                        Boostez vos compétences en entretien avec des
-                        simulations réalistes et des retours intelligents.
+                        Boost your interview skills with realistic simulations
+                        and intelligent feedback.
                     </Text>
                 </Animatable.View>
 
@@ -45,8 +45,8 @@ const Index = () => {
                                 color="#1F2C50"
                             />
                         }
-                        title="Simulations réalistes"
-                        description="Vivez des entretiens comme en conditions réelles, adaptés à votre domaine."
+                        title="Realistic simulations"
+                        description="Experience interviews like in real conditions, adapted to your field."
                     />
                     <AnimatedFeatureCard
                         delay={300}
@@ -57,8 +57,8 @@ const Index = () => {
                                 color="#1F2C50"
                             />
                         }
-                        title="Analyse assistée par IA"
-                        description="Recevez une évaluation automatique de vos réponses pour vous améliorer."
+                        title="AI-assisted analysis"
+                        description="Receive an automatic assessment of your answers to help you improve."
                     />
                     <AnimatedFeatureCard
                         delay={400}
@@ -69,8 +69,8 @@ const Index = () => {
                                 color="#1F2C50"
                             />
                         }
-                        title="Suivi de progression"
-                        description="Visualisez votre évolution grâce à des graphiques clairs et motivants."
+                        title="Progress tracking"
+                        description="Visualize your progress with clear and motivating graphs."
                     />
                 </View>
 
@@ -84,7 +84,7 @@ const Index = () => {
                         onPress={() => router.push("/interviewOptions")}
                         className="bg-primary py-4 px-8 rounded-full items-center justify-center flex-row gap-2 my-10"
                         textClassName="text-lg font-semibold"
-                        title="Commencer une simulation"
+                        title="Start a simulation"
                         icon={
                             <LucideIcons
                                 name="arrow-right"
@@ -104,7 +104,7 @@ const Index = () => {
                 >
                     <View className="items-center mb-3 gap-3">
                         <Text className="text-2xl font-bold text-primary">
-                            Comment ça marche?
+                            How does it work?
                         </Text>
                     </View>
                     <View className="flex-col justify-center mb-3 gap-3">
@@ -128,24 +128,23 @@ const Index = () => {
 
 const steps = [
     {
-        title: "Sélectionner un rôle",
+        title: "Select a role",
         description:
-            "Choisissez parmi une bibliothèque de rôles professionnels pour personnaliser votre pratique.",
+            "Choose from a library of professional roles to customize your practice.",
     },
     {
-        title: "Soumettez vos réponses",
-        description:
-            "Répondez aux questions d’entretien courantes tout en enregistrant.",
+        title: "Submit your answers",
+        description: "Answer common interview questions while recording.",
     },
     {
-        title: "Obtenez les commentaires de l’IA",
+        title: "Get feedback from AI",
         description:
-            "Notre IA analyse vos réponses et fournit des informations constructives.",
+            "Our AI analyzes your responses and provides constructive insights.",
     },
     {
-        title: "Révisez et améliorez",
+        title: "Review and improve",
         description:
-            "Utilisez les commentaires et suivez vos progrès pour réussir votre prochain véritable entretien !",
+            "Use feedback and track your progress to ace your next real interview!",
     },
 ];
 

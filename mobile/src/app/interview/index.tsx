@@ -23,16 +23,6 @@ import CustomButtonIcon from "@/src/components/CustomButtonIcon";
 import api from "@/src/lib/axios";
 import { isAxiosError } from "axios";
 
-interface Difficulties {
-    [key: string]: string;
-}
-
-const difficulties: Difficulties = {
-    easy: "Easy",
-    medium: "Medium",
-    hard: "Hard",
-};
-
 const Interview = () => {
     const { role, difficulty, questions } = useLocalSearchParams<{
         role: string;
@@ -218,10 +208,10 @@ const Interview = () => {
 
         setIsSpeaking(true);
         Speech.speak(answers[currentIndex].question, {
-            language: "fr-FR",
+            language: "en-US",
             pitch: 1.1,
             rate: 0.9,
-            voice: "fr-fr-x-frb-local",
+            // voice: "fr-fr-x-frb-local",
             onDone: () => setIsSpeaking(false),
             onStopped: () => setIsSpeaking(false),
         });
@@ -296,7 +286,7 @@ const Interview = () => {
                 {/* Header Section */}
                 <View className="mb-6">
                     <Text className="text-3xl font-bold text-gray-900 mb-1">
-                        Simulation d&apos;entretien
+                        Interview simulator
                     </Text>
                     <View className="flex-row items-center">
                         <View className="bg-blue-100 px-3 py-1 rounded-full mr-2">
@@ -306,7 +296,8 @@ const Interview = () => {
                         </View>
                         <View className="bg-purple-100 px-3 py-1 rounded-full">
                             <Text className="text-purple-800 text-sm font-medium">
-                                {difficulties[difficulty]}
+                                {difficulty.charAt(0).toUpperCase() +
+                                    difficulty.slice(1)}
                             </Text>
                         </View>
                     </View>
@@ -359,7 +350,7 @@ const Interview = () => {
                             color="#6b7280"
                         />
                         <Text className="text-sm text-gray-500 ml-1">
-                            Répondez comme si vous étiez en entretien
+                            Answer as if you were in an interview
                         </Text>
                     </View>
                 </View>
@@ -375,7 +366,7 @@ const Interview = () => {
                     <TextInput
                         value={answers[currentIndex]?.answer}
                         onChangeText={handleChangeAnswer}
-                        placeholder="Écrivez votre réponse ici..."
+                        placeholder="Write your answer here..."
                         placeholderTextColor="#9ca3af"
                         multiline
                         textAlignVertical="top"
@@ -423,7 +414,7 @@ const Interview = () => {
                         <>
                             <View className="w-3 h-3 bg-red-500 rounded-full mr-2" />
                             <Text className="text-sm text-red-600">
-                                Enregistrement en cours...
+                                Recording...
                             </Text>
                         </>
                     )}
@@ -435,7 +426,7 @@ const Interview = () => {
                                 className="mr-2"
                             />
                             <Text className="text-sm text-blue-600">
-                                Traitement de l&apos;audio...
+                                Audio processing...
                             </Text>
                         </>
                     )}
@@ -443,7 +434,7 @@ const Interview = () => {
 
                 {/* Character Counter */}
                 <Text className="text-xs text-gray-400 mt-1 text-right">
-                    {answers[currentIndex]?.answer.length || 0} caractères
+                    {answers[currentIndex]?.answer.length || 0} characters
                 </Text>
 
                 {/*voiceError && (
@@ -460,9 +451,7 @@ const Interview = () => {
 
                 {/* Navigation Button */}
                 <CustomButtonIcon
-                    title={
-                        isLast ? "Terminer l'entretien" : "Question suivante"
-                    }
+                    title={isLast ? "End the interview" : "Next question"}
                     variant="primary"
                     onPress={handleNext}
                     disabled={

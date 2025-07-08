@@ -14,14 +14,14 @@ import clsx from "clsx";
 import CustomButtonIcon from "@/src/components/CustomButtonIcon";
 
 const popularRoles = [
-    "Développeur Web",
-    "Designer UX",
-    "Responsable Marketing",
-    "Analyste Financier",
-    "Chef de Projet",
+    "Web Developer",
+    "UX Designer",
+    "Marketing Manager",
+    "Financial Analyst",
+    "Project Manager",
     "Data Scientist",
-    "Rédacteur Technique",
-    "Spécialiste SEO",
+    "Technical Editor",
+    "SEO Specialist",
 ];
 
 const RoleSelection = () => {
@@ -77,10 +77,10 @@ const RoleSelection = () => {
             <View className="px-6 pt-10 pb-4">
                 <View className="items-center mb-8">
                     <Text className="text-3xl font-bold text-primary text-center">
-                        Quel est le rôle que vous souhaitez simuler ?
+                        What role do you want to simulate?
                     </Text>
                     <Text className="mt-3 text-center text-neutral-500">
-                        Choisissez un poste dans la liste ou saisissez le vôtre.
+                        Choose a position from the list or enter your own.
                     </Text>
                 </View>
 
@@ -89,7 +89,7 @@ const RoleSelection = () => {
                         key="search-input"
                         value={searchQuery}
                         onChangeText={handleSearch}
-                        placeholder="Rechercher un rôle..."
+                        placeholder="Search for a role..."
                         className="border border-neutral-300 rounded-xl px-4 py-3 mb-4 text-base"
                         autoCorrect={false}
                         autoCapitalize="none"
@@ -98,7 +98,7 @@ const RoleSelection = () => {
                     <TextInput
                         ref={customRoleInputRef}
                         key="custom-role-input"
-                        placeholder="Saisissez le rôle souhaité..."
+                        placeholder="Enter the desired role..."
                         value={selected ?? ""}
                         onChangeText={setSelected}
                         className="border border-neutral-300 rounded-xl px-4 py-3 mb-4 text-base"
@@ -147,7 +147,7 @@ const RoleSelection = () => {
                                     onPress={handleSwitchToCustomMode}
                                 >
                                     <Text className="text-primary text-center underline">
-                                        Je ne trouve pas mon rôle
+                                        I can&apos;t find my role
                                     </Text>
                                 </TouchableOpacity>
                             ) : (
@@ -156,13 +156,13 @@ const RoleSelection = () => {
                                     onPress={handleSwitchToListMode}
                                 >
                                     <Text className="text-primary text-center underline">
-                                        Retour à la liste
+                                        Back to the list
                                     </Text>
                                 </TouchableOpacity>
                             )}
 
                             <CustomButtonIcon
-                                title="continuer"
+                                title="Continue"
                                 variant="primary"
                                 className={clsx(
                                     "py-4 px-6 rounded-full flex-row justify-center items-center gap-2",

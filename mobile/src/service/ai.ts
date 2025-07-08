@@ -72,7 +72,7 @@ export async function getFeedback(
                 },
                 {
                     role: "user",
-                    content: `Here is the user's answer: "${answer}". Evaluate the answer and return a structured JSON response including: - a short "feedback" explaining whether the answer is correct or what is missing, - a "score" between 0 and 5, - a short "advice" field with suggestions for improvement (in the same language as the answer), - and a "level" which can be "weak", "medium", or "strong". Return only valid JSON, such as: { "feedback": "...", "score": 3, "advice": "...", "level": "medium" }. Do not explain your reasoning outside of the JSON. Use the language in the answer for feedback.`,
+                    content: `Here is the user's answer: "${answer}". Evaluate the answer and return a structured JSON response including: - a short "feedback" explaining whether the answer is correct or what is missing, - a "score" between 0 and 5, - a short "advice" field with suggestions for improvement (in the same language as the answer), - and a "level" which can be "weak", "medium", or "strong". Return only valid JSON, such as: { "feedback": "...", "score": 3, "advice": "...", "level": "medium" }. Do not explain your reasoning outside of the JSON. Use English for the feedback.`,
                 },
             ],
             model: model,

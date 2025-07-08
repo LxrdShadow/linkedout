@@ -1,3 +1,3 @@
-export const SERVER_URL = "http://192.168.152.53:8000";
+export const SERVER_URL = "http://192.168.43.53:8000";
 export const GITHUB_PERSONAL_ACCESS_TOKEN =
     process.env.EXPO_PUBLIC_GITHUB_PERSONAL_ACCESS_TOKEN;
