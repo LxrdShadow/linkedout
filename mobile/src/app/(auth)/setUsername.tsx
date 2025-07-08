@@ -18,20 +18,20 @@ const SetUsername = () => {
     return (
         <View className="flex-1 bg-white p-6 justify-center item-center gap-10 pb-10">
             <Text className="text-5xl text-gray-600 text-center font-bold mb-8">
-                Choisissez un nom d&apos;utilisateur
+                Choose an username
             </Text>
 
             <View className="p-10">
                 <View className="text-center p-10 rounded-2xl">
                     <CustomTextInput
                         inputClassName="bg-primary-0 rounded-xl p-3 text-lg"
-                        placeholder="Nom d'utilisateur"
+                        placeholder="Username"
                         autoCapitalize="none"
                         onChangeText={setUsername}
                         value={username}
                     />
                     <CustomButton
-                        title="Confirmer"
+                        title="Confirm"
                         onPress={handleSetUsername}
                         textClassName="font-bold text-xl"
                         variant="primary"

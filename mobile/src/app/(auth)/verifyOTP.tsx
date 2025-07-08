@@ -21,15 +21,13 @@ const VerifyOTP = () => {
     return (
         <View className="flex-1 bg-white p-6 justify-center item-center gap-10">
             <Text className="text-5xl text-gray-600 text-center font-bold mb-8">
-                Verifier l&apos;email
+                Confirm the email
             </Text>
 
             <View className="p-10">
                 <View className="bg-primary-0 text-center p-10 rounded-2xl">
                     <View className="flex justify-center mb-4">
-                        <Text>
-                            Entrez le code envoyé à l&apos;adresse email{" "}
-                        </Text>
+                        <Text>Enter the code sent to the email address </Text>
                         <Text className="text-primary underline text-center">
                             {email}
                         </Text>
@@ -43,7 +41,7 @@ const VerifyOTP = () => {
                         value={otp}
                     />
                     <CustomButton
-                        title="Confirmer"
+                        title="Confirm"
                         onPress={handleVerifyOTP}
                         textClassName="font-bold text-xl"
                         variant="primary"

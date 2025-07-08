@@ -4,17 +4,6 @@ import React, { useRef, useEffect } from "react";
 import { AntDesign } from "@expo/vector-icons";
 import CustomButtonIcon from "@/src/components/CustomButtonIcon";
 
-interface FeedbackEntry {
-    question: string;
-    answer: string;
-    feedback: {
-        feedback: string;
-        score: number;
-        advice: string;
-        level: string;
-    };
-}
-
 const levelColors: Record<string, string> = {
     faible: "bg-red-100 text-red-800",
     moyen: "bg-yellow-100 text-yellow-800",

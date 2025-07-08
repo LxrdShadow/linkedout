@@ -20,7 +20,7 @@ export default function LoginScreen() {
     return (
         <View className="flex-1 bg-white p-6 justify-center item-center gap-20">
             <Text className="text-5xl text-gray-600 text-center font-bold mb-8 animate-pulse duration-150">
-                Bienvenue
+                Welcome
             </Text>
 
             <View>
@@ -35,18 +35,20 @@ export default function LoginScreen() {
 
                 <CustomTextInput
                     inputClassName="bg-secondary rounded-xl p-3 mb-2 text-lg"
-                    placeholder="Mot de passe"
+                    placeholder="Password"
                     onChangeText={setPassword}
                     value={password}
                     secureTextEntry={true}
                 />
 
                 <TouchableOpacity className="items-end mb-6">
-                    <Text className="text-primary">Mot de passe oublié?</Text>
+                    <Text className="text-primary font-bold">
+                        Forgot password
+                    </Text>
                 </TouchableOpacity>
 
                 <CustomButton
-                    title="Se connecter"
+                    title="Log in"
                     onPress={handleLogin}
                     textClassName="font-bold text-xl"
                     variant="primary"
@@ -55,12 +57,10 @@ export default function LoginScreen() {
 
                 <View className="flex-row justify-center mt-4">
                     <Text className="text-gray-600">
-                        Pas encore de compte?{" "}
+                        Don&apos;t have an account?{" "}
                     </Text>
                     <TouchableOpacity onPress={() => router.push("/register")}>
-                        <Text className="text-primary font-medium">
-                            S&apos;inscrire
-                        </Text>
+                        <Text className="text-primary font-bold">Signup</Text>
                     </TouchableOpacity>
                 </View>
             </View>
