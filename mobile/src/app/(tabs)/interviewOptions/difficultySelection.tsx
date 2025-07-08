@@ -18,9 +18,9 @@ interface Difficulties {
 }
 
 const difficulties: Difficulties = {
-    Facile: "facile",
-    Intermédiaire: "intermediaire",
-    Difficile: "difficile",
+    Easy: "easy",
+    Medium: "medium",
+    Hard: "hard",
 };
 
 const DifficultySelection = () => {
@@ -48,10 +48,10 @@ const DifficultySelection = () => {
             <View className="px-6 pt-10 flex-1">
                 <View className="items-center mb-8">
                     <Text className="text-3xl font-bold text-primary text-center">
-                        Choisissez la difficulté
+                        Choose the difficulty
                     </Text>
                     <Text className="mt-3 text-center text-neutral-500">
-                        Sélectionnez votre niveau de défi pour la simulation.
+                        Select your challenge level for the simulation.
                     </Text>
                 </View>
 
@@ -83,7 +83,7 @@ const DifficultySelection = () => {
 
                 <View className="mt-auto pb-10">
                     <CustomButtonIcon
-                        title="continuer"
+                        title="Continue"
                         variant="primary"
                         className={clsx(
                             "py-4 px-6 rounded-full flex-row justify-center items-center gap-2",
