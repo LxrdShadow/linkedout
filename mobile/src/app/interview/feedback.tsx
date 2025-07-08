@@ -16,10 +16,10 @@ interface FeedbackEntry {
 }
 
 const levelColors: Record<string, string> = {
-    faible: "bg-red-100 text-red-800",
-    moyen: "bg-yellow-100 text-yellow-800",
-    eleve: "bg-green-100 text-green-800",
-    fort: "bg-green-100 text-green-800",
+    weak: "bg-red-100 text-red-800",
+    medium: "bg-yellow-100 text-yellow-800",
+    high: "bg-green-100 text-green-800",
+    strong: "bg-green-100 text-green-800",
 };
 
 const scoreColors = [
@@ -73,7 +73,7 @@ const FeedbackScreen = () => {
                 <View className="flex-row justify-center items-center mb-3">
                     <View className="h-px bg-gray-200 flex-1" />
                     <Text className="text-3xl font-extrabold text-gray-900 text-center mx-4">
-                        Résultats de l&apos;entretien
+                        Interview Results
                     </Text>
                     <View className="h-px bg-gray-200 flex-1" />
                 </View>
@@ -103,7 +103,7 @@ const FeedbackScreen = () => {
 
                         <View className="flex-row items-center">
                             <Text className="text-lg text-gray-600 mr-2">
-                                Score moyen sur
+                                Average score out of
                             </Text>
                             <View className="bg-blue-100 px-2 py-1 rounded-full">
                                 <Text className="text-blue-800 font-bold">
@@ -126,8 +126,8 @@ const FeedbackScreen = () => {
                                 {calculateAverageScore() >= 4
                                     ? "Excellent"
                                     : calculateAverageScore() >= 2.5
-                                      ? "Moyen"
-                                      : "À améliorer"}
+                                      ? "Average"
+                                      : "To improve"}
                             </Text>
                         </View>
                     </View>
@@ -164,7 +164,7 @@ const FeedbackScreen = () => {
 
                         <View className="mb-5">
                             <Text className="text-sm font-medium text-gray-500 mb-1">
-                                Votre réponse
+                                Your answer
                             </Text>
                             <View className="bg-blue-50 rounded-lg p-3 border border-blue-100">
                                 <Text className="text-base text-gray-800">
@@ -181,7 +181,7 @@ const FeedbackScreen = () => {
                                     color="#6b7280"
                                 />
                                 <Text className="text-sm font-medium text-gray-500 ml-2">
-                                    Retour
+                                    Feedback
                                 </Text>
                             </View>
                             <Text className="text-base text-gray-700 pl-6">
@@ -197,7 +197,7 @@ const FeedbackScreen = () => {
                                     color="#6b7280"
                                 />
                                 <Text className="text-sm font-medium text-gray-500 ml-2">
-                                    Conseil
+                                    Advice
                                 </Text>
                             </View>
                             <Text className="text-base text-gray-700 pl-6">
@@ -231,7 +231,7 @@ const FeedbackScreen = () => {
             <CustomButtonIcon
                 variant="primary"
                 className="rounded-xl py-4"
-                title="Retourner"
+                title="Return"
                 onPress={() => router.replace("/(tabs)/interviewOptions")}
             />
         </Animated.ScrollView>
