@@ -21,7 +21,7 @@ const Register = () => {
     return (
         <View className="flex-1 bg-white p-6 justify-center item-center gap-7">
             <Text className="text-5xl text-gray-600 text-center font-bold mb-8">
-                Créer un compte
+                Create an account
             </Text>
 
             <View className="flex justify-center gap-5">
@@ -36,17 +36,17 @@ const Register = () => {
                         value={email}
                     />
                     <CustomTextInput
-                        label="Mot de passe"
+                        label="Password"
                         inputClassName="bg-primary-0 rounded-xl p-3 mb-1 text-lg"
-                        placeholder="Mot de passe"
+                        placeholder="Password"
                         secureTextEntry
                         onChangeText={setPassword}
                         value={password}
                     />
                     <CustomTextInput
-                        label="Confirmer le mot de passe"
+                        label="Confirm the password"
                         inputClassName="bg-primary-0 rounded-xl p-3 mb-1 text-lg"
-                        placeholder="Mot de passe de confirmation"
+                        placeholder="Confirm password"
                         secureTextEntry
                         onChangeText={setConfirmPassword}
                         value={confirmPassword}
@@ -55,7 +55,7 @@ const Register = () => {
 
                 <View>
                     <CustomButton
-                        title="Continuer"
+                        title="Continue"
                         onPress={handleSignup}
                         textClassName="font-bold text-xl"
                         variant="primary"
@@ -64,11 +64,11 @@ const Register = () => {
 
                     <View className="flex-row justify-center mt-4">
                         <Text className="text-gray-600">
-                            Vous avez déjà un compte?{" "}
+                            Already have an account?{" "}
                         </Text>
                         <TouchableOpacity onPress={() => router.back()}>
-                            <Text className="text-primary font-medium">
-                                Se connecter
+                            <Text className="text-primary font-bold">
+                                Log in
                             </Text>
                         </TouchableOpacity>
                     </View>
