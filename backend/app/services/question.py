@@ -43,6 +43,26 @@ def get_questions_from_ai(role: str, difficulty: str) -> list[dict]:
     return parse_response(response)
 
 
+def get_feedback(role: str, question: str, answer: str) -> list[dict]:
+    response = client.chat.completions.create(
+        messages=[
+            {
+                "role": "system",
+                "content": f'You are an interview coach and you asked this question to the user who is working on an interview as {role}: "{question}"',
+            },
+            {
+                "role": "user",
+                "content": f'Here is the user\'s answer: "{answer}". Evaluate the answer and return a structured JSON response including: - a short "feedback" explaining whether the answer is correct or what is missing, - a "score" between 0 and 5, - a short "advice" field with suggestions for improvement (in the same language as the answer), - and a "level" which can be "weak", "medium", or "strong". Return only valid JSON, such as: {{ "feedback": "...", "score": 3, "advice": "...", "level": "medium" }}. Do not explain your reasoning outside of the JSON. Use English for the feedback.',
+            },
+        ],
+        temperature=1.0,
+        top_p=1.0,
+        model=model,
+    )
+
+    return parse_response(response)
+
+
 def parse_response(response: ChatCompletion):
     raw = None
     if response and response.choices and len(response.choices) > 0:
