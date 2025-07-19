@@ -8,7 +8,7 @@ from app.auth.auth import get_current_user
 from app.models.user import User
 from app.schemas.interview import Difficulty, InterviewCreate, InterviewOut
 from app.schemas.question import QuestionCreate, QuestionOut
-from app.services.question import get_questions_from_json
+from app.services.question import get_questions_from_ai
 
 router = APIRouter(prefix="/interviews", tags=["interviews"])
 
@@ -36,7 +36,10 @@ async def create_interview(
     questions: list[QuestionOut] = []
 
     # TODO: Get the questions from AI based on the interview role and the difficulty
-    question_list = get_questions_from_json()
+    try:
+        question_list = get_questions_from_ai(interview.role, interview.difficulty)
+    except Exception as e:
+        raise HTTPException(500, f"Failed to generate the questions: {str(e)}")
 
     for i, question in enumerate(question_list):
         question_out = question_crud.create_question(
