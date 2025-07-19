@@ -28,6 +28,6 @@ def get_interview_questions(db: Session, interview: Interview):
     return (
         db.query(Question)
         .where(Question.interview_id == interview.id)
-        .order_by(Question.index, "ASC")
+        .order_by(Question.index.asc())
         .all()
     )
