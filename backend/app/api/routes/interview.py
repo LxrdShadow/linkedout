@@ -35,7 +35,6 @@ async def create_interview(
     interview = interview_crud.create_interview(db, interview, auth_user)
     questions: list[QuestionOut] = []
 
-    # TODO: Get the questions from AI based on the interview role and the difficulty
     try:
         question_list = get_questions_from_ai(interview.role, interview.difficulty)
     except Exception as e:
