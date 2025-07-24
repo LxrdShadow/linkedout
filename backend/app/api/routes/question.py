@@ -4,16 +4,19 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 
 import app.crud.answer as answer_crud
+import app.crud.feedback as feedback_crud
 import app.crud.question as question_crud
 from app.api.deps import get_db
-from app.schemas.answer import AnswerCreate, AnswerOut
+from app.schemas.answer import AnswerCreate
+from app.schemas.feedback import FeedbackCreate, FeedbackOut
+from app.services.question import get_feedback
 
 router = APIRouter(prefix="/questions", tags=["questions"])
 
 
 @router.post(
     "/{question_id}/answer",
-    response_model=AnswerOut,
+    response_model=FeedbackOut,
     status_code=status.HTTP_201_CREATED,
 )
 async def answer_question(
@@ -23,4 +26,16 @@ async def answer_question(
     if not question:
         raise HTTPException(404, "Question not found.")
 
-    return answer_crud.create_answer(db, answer, question)
+    new_answer = answer_crud.create_answer(db, answer, question)
+    feedback = get_feedback(
+        question.interview.role, question.text, new_answer.text_response
+    )
+
+    feedback_in = FeedbackCreate(
+        score=float(feedback["score"]),
+        feedback=feedback["feedback"],
+        advice=feedback["advice"],
+        level=feedback["level"],
+    )
+
+    return feedback_crud.create_feedback(db, feedback_in, answer)

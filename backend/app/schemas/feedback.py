@@ -5,10 +5,10 @@ from pydantic import BaseModel
 
 
 class FeedbackBase(BaseModel):
-    category: str
     score: float
     feedback: str
     advice: str
+    level: str
 
 
 class FeedbackCreate(FeedbackBase):

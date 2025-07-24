@@ -1,7 +1,7 @@
 from datetime import datetime
 from uuid import uuid4
 
-from sqlalchemy import UUID, Column, DateTime, Float, ForeignKey, Text
+from sqlalchemy import UUID, Column, DateTime, Float, ForeignKey, String, Text
 
 from app.db.base import Base
 
@@ -14,5 +14,6 @@ class Feedback(Base):
     score = Column(Float)
     feedback = Column(Text)
     advice = Column(Text)
+    level = Column(String)
     # source = Column(String, default="AI")
     created_at = Column(DateTime, default=datetime.now)
