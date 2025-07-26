@@ -9,9 +9,9 @@ from app.schemas.answer import AnswerCreate
 
 def create_answer(db: Session, answer: AnswerCreate, question: Question):
     answer = Answer(
-        id=str(uuid4), question_id=question.id, text_answer=answer.text_response
+        id=str(uuid4()), question_id=question.id, text_response=answer.text_response
     )
-    db.save(answer)
+    db.add(answer)
     db.commit()
-    db.refresh()
+    db.refresh(answer)
     return answer
