@@ -32,6 +32,7 @@ const DifficultySelection = () => {
 
     const handleContinue = async () => {
         if (!selected) return;
+        setIsLoading(true);
         try {
             const questions = await api.post("/interviews", {
                 role,
