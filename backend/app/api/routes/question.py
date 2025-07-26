@@ -38,4 +38,4 @@ async def answer_question(
         level=feedback["level"],
     )
 
-    return feedback_crud.create_feedback(db, feedback_in, answer)
+    return feedback_crud.create_feedback(db, feedback_in, new_answer)
