@@ -14,6 +14,7 @@ def create_feedback(db: Session, feedback_in: FeedbackCreate, answer: Answer):
         score=feedback_in.score,
         feedback=feedback_in.feedback,
         advice=feedback_in.advice,
+        level=feedback_in.level,
     )
     db.add(feedback)
     db.commit()
