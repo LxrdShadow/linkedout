@@ -5,7 +5,7 @@ import { AntDesign } from "@expo/vector-icons";
 import CustomButtonIcon from "@/src/components/CustomButtonIcon";
 
 interface FeedbackEntry {
-    question: string;
+    question: { id: string; text: string; index: number };
     answer: string;
     feedback: {
         feedback: string;
@@ -36,7 +36,7 @@ const FeedbackScreen = () => {
 
     let parsed: FeedbackEntry[] = [];
     try {
-        parsed = JSON.parse(feedbacks);
+        parsed = JSON.parse(feedbacks) as FeedbackEntry[];
     } catch (e) {
         console.error("Failed to parse feedbacks", e);
     }
@@ -158,7 +158,7 @@ const FeedbackScreen = () => {
                                 </Text>
                             </View>
                             <Text className="text-lg font-bold text-gray-800 flex-1">
-                                {entry.question}
+                                {entry.question.text}
                             </Text>
                         </View>
 
