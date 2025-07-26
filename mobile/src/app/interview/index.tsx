@@ -48,6 +48,7 @@ const Interview = () => {
             return [];
         }
     })();
+    console.log(parsedQuestions);
 
     const [isSpeaking, setIsSpeaking] = useState(false);
     const [isRecording, setIsRecording] = useState(false);

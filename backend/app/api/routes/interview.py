@@ -38,6 +38,7 @@ async def create_interview(
     try:
         question_list = get_questions_from_ai(interview.role, interview.difficulty)
     except Exception as e:
+        print(e)
         raise HTTPException(500, f"Failed to generate the questions: {str(e)}")
 
     for i, question in enumerate(question_list):
