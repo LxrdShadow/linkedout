@@ -1,15 +1,14 @@
 from datetime import datetime
-from typing import Optional
 from uuid import UUID
 
 from pydantic import BaseModel
 
 
 class FeedbackBase(BaseModel):
-    category: str
     score: float
-    comment: str
-    source: Optional[str] = "AI"
+    feedback: str
+    advice: str
+    level: str
 
 
 class FeedbackCreate(FeedbackBase):

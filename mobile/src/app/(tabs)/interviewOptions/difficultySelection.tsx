@@ -11,7 +11,8 @@ import clsx from "clsx";
 import LucideIcons from "@react-native-vector-icons/lucide";
 
 import CustomButtonIcon from "@/src/components/CustomButtonIcon";
-import { getQuestions } from "@/src/service/ai";
+import api from "@/src/lib/axios";
+import Toast from "react-native-toast-message";
 
 interface Difficulties {
     [key: string]: string;
@@ -31,13 +32,38 @@ const DifficultySelection = () => {
 
     const handleContinue = async () => {
         if (!selected) return;
-        const questions = await getQuestions(role, selected, setIsLoading);
-        const encodedQuestions = encodeURIComponent(JSON.stringify(questions));
+        setIsLoading(true);
+        try {
+            const questions = await api.post("/interviews", {
+                role,
+                selected,
+                setIsLoading,
+            });
+            const encodedQuestions = encodeURIComponent(
+                JSON.stringify(questions.data),
+            );
 
-        router.push({
-            pathname: "/interview",
-            params: { role, difficulty: selected, questions: encodedQuestions },
-        });
+            router.push({
+                pathname: "/interview",
+                params: {
+                    role,
+                    difficulty: selected,
+                    questions: encodedQuestions,
+                },
+            });
+        } catch (err) {
+            console.log(err);
+            Toast.show({
+                type: "error",
+                text1: "Error",
+                text1Style: { fontSize: 16, fontWeight: "bold" },
+                text2: "Failed to generate questions.",
+                text2Style: { fontSize: 13 },
+            });
+            router.push("/interviewOptions");
+        } finally {
+            setIsLoading(false);
+        }
     };
 
     return (

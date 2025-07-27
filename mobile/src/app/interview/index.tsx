@@ -17,11 +17,16 @@ import Toast from "react-native-toast-message";
 import * as Speech from "expo-speech";
 import { useAudioRecorder, AudioModule, RecordingPresets } from "expo-audio";
 
-import { getFeedback } from "@/src/service/ai";
 import { Ionicons } from "@expo/vector-icons";
 import CustomButtonIcon from "@/src/components/CustomButtonIcon";
 import api from "@/src/lib/axios";
 import { isAxiosError } from "axios";
+
+type QuestionType = {
+    id: string;
+    text: string;
+    index: number;
+};
 
 const Interview = () => {
     const { role, difficulty, questions } = useLocalSearchParams<{
@@ -34,7 +39,7 @@ const Interview = () => {
 
     const parsedQuestions = (() => {
         try {
-            return JSON.parse(questions) as { text: string }[];
+            return JSON.parse(questions) as QuestionType[];
         } catch (e) {
             console.error("Failed to parse questions", e);
             Toast.show({
@@ -54,15 +59,15 @@ const Interview = () => {
     const [currentIndex, setCurrentIndex] = useState(0);
     const [microphoneGranted, setMicrophoneGranted] = useState(false);
     const [answers, setAnswers] = useState<
-        { question: string; answer: string; feedback: string | null }[]
+        { question: QuestionType; answer: string; feedback: string | null }[]
     >(
         parsedQuestions.map((q) => ({
-            question: q.text,
+            question: q,
             answer: "",
             feedback: null,
         })),
     );
-    const [loading, setLoading] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
     const [recordLoading, setRecordLoading] = useState(false);
 
     const record = async () => {
@@ -165,15 +170,16 @@ const Interview = () => {
             return;
         }
 
+        setIsLoading(true);
         try {
-            const feedback = await getFeedback(
-                role,
-                current.question,
-                current.answer,
-                setLoading,
+            const response = await api.post(
+                `/questions/${current.question.id}/answer`,
+                {
+                    text_response: current.answer,
+                },
             );
             const updated = [...answers];
-            updated[currentIndex] = { ...current, feedback };
+            updated[currentIndex] = { ...current, feedback: response.data };
             setAnswers(updated);
 
             if (currentIndex < answers.length - 1) {
@@ -195,7 +201,7 @@ const Interview = () => {
                 text2Style: { fontSize: 13 },
             });
         } finally {
-            setLoading(false);
+            setIsLoading(false);
         }
     };
 
@@ -207,7 +213,7 @@ const Interview = () => {
         }
 
         setIsSpeaking(true);
-        Speech.speak(answers[currentIndex].question, {
+        Speech.speak(answers[currentIndex].question.text, {
             language: "en-US",
             pitch: 1.1,
             rate: 0.9,
@@ -330,7 +336,7 @@ const Interview = () => {
                 <View className="bg-white rounded-xl p-5 mb-6 shadow-sm border border-gray-100">
                     <View className="flex-row justify-between items-start mb-3">
                         <Text className="text-lg font-semibold text-gray-800 flex-1 mr-3">
-                            {answers[currentIndex]?.question}
+                            {answers[currentIndex]?.question.text}
                         </Text>
                         <TouchableOpacity
                             onPress={readCurrentQuestion}
@@ -456,10 +462,10 @@ const Interview = () => {
                     onPress={handleNext}
                     disabled={
                         !answers[currentIndex]?.answer.trim() ||
-                        loading ||
+                        isLoading ||
                         !microphoneGranted
                     }
-                    isLoading={loading}
+                    isLoading={isLoading}
                     className={clsx(
                         "mt-6 py-4 rounded-xl bg-primary",
                         !answers[currentIndex]?.answer.trim() && "opacity-50",
